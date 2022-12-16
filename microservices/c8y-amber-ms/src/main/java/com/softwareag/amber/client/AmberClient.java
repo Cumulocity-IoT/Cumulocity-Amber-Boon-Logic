@@ -25,8 +25,11 @@ public class AmberClient {
 
     private AmberOAuthConfiguration oAuthConfiguration;
 
+    private long reauthTime;
+
     public AmberClient(@NonNull String url, @NonNull AmberCredentials credentials) throws HttpServerErrorException {
         this.url = url;
+        this.reauthTime = System.currentTimeMillis() / 1000l;
         initOAuth(url, credentials);
     }
 
@@ -35,7 +38,7 @@ public class AmberClient {
     }
 
     public AmberSensor[] getSensors() throws HttpServerErrorException {
-        if (oAuthConfiguration != null) {
+        if (this.oAuthVerify() == false) {
             log.error("OAuth configuration isn't set");
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -68,7 +71,7 @@ public class AmberClient {
     }
 
     public AmberSensor createSensor() throws HttpServerErrorException {
-        if (oAuthConfiguration == null) {
+        if (this.oAuthVerify() == false) {
             log.error("OAuth configuration isn't set");
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -101,7 +104,7 @@ public class AmberClient {
     }
 
     public Optional<AmberSensor> getSensor(final String sensorId) throws HttpServerErrorException {
-        if (oAuthConfiguration == null) {
+        if (this.oAuthVerify() == false) {
             log.error("OAuth configuration isn't set");
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -136,7 +139,7 @@ public class AmberClient {
     }
 
     public void deleteSensor(final String sensorId) throws HttpServerErrorException {
-        if (oAuthConfiguration == null) {
+        if (this.oAuthVerify() == false) {
             log.error("OAuth configuration isn't set");
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -171,7 +174,7 @@ public class AmberClient {
     }
 
     public AmberSensorConfiguration createSensorConfiguration(final String sensorId, final AmberSensorConfiguration configuration) throws HttpServerErrorException {
-        if (oAuthConfiguration == null) {
+        if (this.oAuthVerify() == false) {
             log.error("OAuth configuration isn't set");
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -206,7 +209,7 @@ public class AmberClient {
     }
 
     public AmberSensorConfiguration getSensorConfiguration(final String sensorId) throws HttpServerErrorException {
-        if (oAuthConfiguration == null) {
+        if (this.oAuthVerify() == false) {
             log.error("OAuth configuration isn't set");
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -240,7 +243,7 @@ public class AmberClient {
     }
 
     public AmberStreamData streamData(final String sensorId, final ServiceDataStream serviceDataStream) throws HttpServerErrorException {
-        if (oAuthConfiguration == null) {
+        if (this.oAuthVerify() == false) {
             log.error("OAuth configuration isn't set");
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -276,7 +279,7 @@ public class AmberClient {
     }
 
     public double[] getRootCause(final String sensorId, final int clusterId) throws HttpServerErrorException {
-        if (oAuthConfiguration == null) {
+        if (this.oAuthVerify() == false) {
             log.error("OAuth configuration isn't set");
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -310,8 +313,21 @@ public class AmberClient {
         throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    private boolean oAuthVerify() {
+        if (System.currentTimeMillis() / 1000l > this.reauthTime - 60) {
+            try {
+                // attempt authentication if reauthTime is within 60 seconds of expiring
+                this.initOAuth();
+            } catch (HttpServerErrorException e) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static HttpResponse<String> authenticate(final @NonNull String url, final @NonNull AmberCredentials amberCredentials)
             throws HttpServerErrorException {
+
         final String credentials = "{\n" +
                 "  \"username\": \"" + amberCredentials.getUsername() + "\",\n" +
                 "  \"password\": \"" + amberCredentials.getPassword() + "\"\n" +
@@ -330,6 +346,9 @@ public class AmberClient {
             if (response.statusCode() != HttpStatus.OK.value()) {
                 throw new HttpServerErrorException(HttpStatus.resolve(response.statusCode()), response.body());
             }
+
+            // save off time when next auth will be required
+            this.reauthTime = System.currentTimeMillis() / 1000l + getOAuthTokenExpiresTime();
 
             return response;
         } catch (URISyntaxException e) {
