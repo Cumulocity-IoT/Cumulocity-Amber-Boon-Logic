@@ -1,0 +1,45 @@
+.input {
+  display: inline;
+  width: fit-content;
+  font-size: 16px;
+  font-family: Times;
+  size: '70';
+}
+
+.display-status-success {
+  color: green;
+}
+
+.display-status-danger {
+  color: red;
+}
+
+.display-status-color {
+  background-color: green;
+}
+
+.dot {
+  height: 20px;
+  width: 20px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.boonlogictable {
+  background-color: var(--component-background, #fff);
+}
+
+.boonlogictable th {
+  color: var(--component-label-color, #333);
+}
+.boonlogictable tr {
+  color: var(--component-color, #000);
+}
+.boonlogictable tr:hover {
+  color: var(--component-brand-primary, #000);
+}
+.editbtn {
+  color: var(--component-color, #f2f3f4);
+  border-color: var(--component-border, #f2f3f4);
+}

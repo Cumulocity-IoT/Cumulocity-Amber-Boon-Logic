@@ -1,0 +1,93 @@
+<c8y-form-group>
+  <div class="form-group">
+    <label for="iteamsPerPage" translate="">Table Page Size</label>
+    <input
+      type="number"
+      min="1"
+      class="form-control"
+      id="config.pageSize"
+      name="config.pageSize"
+      required="required"
+      [(ngModel)]="config.pageSize"
+    />
+    <span id="helpBlock" class="help-block"> e.g. 5 </span>
+  </div>
+  <div class="form-group">
+    <label for="microservicename" translate="">Amber Microservice Name</label>
+    <input
+      class="form-control"
+      id="config.microservicename"
+      name="config.microservicename"
+      required="required"
+      [(ngModel)]="config.microservicename"
+    />
+  </div>
+  <h4 class="text-truncate" translate="">Connection Parameters</h4>
+  <form [formGroup]="connectionform">
+    <div class="form-group">
+      <label for="URL" translate="">URL</label>
+      <input
+        formControlName="connectionurl"
+        type="url"
+        class="form-control"
+        id="URL"
+        name="config.url"
+        placeholder="https://amber.boonlogic.com/v1"
+        required="required"
+        [(ngModel)]="config.url"
+      />
+      <span id="helpBlock" class="help-block"> e.g.https://amber.boonlogic.com/v1 </span>
+    </div>
+    <div class="form-group">
+      <label for="Username" translate="">User Name</label>
+      <input
+        formControlName="connectionusername"
+        type="text"
+        class="form-control"
+        required="required"
+        id="Username"
+        name="config.username"
+        placeholder="User Name"
+        [(ngModel)]="config.username"
+      />
+    </div>
+    <div class="form-group">
+      <label for="Password" translate="">Password</label>
+      <input
+        formControlName="connectionpassword"
+        type="password"
+        class="form-control"
+        required="required"
+        id="Password"
+        name="config.password"
+        placeholder="Password"
+        [(ngModel)]="config.password"
+      />
+    </div>
+    <div class="form-group">
+      <button
+        style="margin-top: 16px"
+        [disabled]="status == 'READY'"
+        type="button"
+        name="connect"
+        class="btn btn-default btn-icon"
+        (click)="amberConnect()"
+        translate=""
+      >
+        <i data-c8y-icon="check-circle" class="text-success dlt-c8y-icon-check-circle"></i> Connect
+      </button>
+      <button
+        style="margin-top: 16px"
+        [disabled]="status != 'READY'"
+        type="button"
+        name="disconnect"
+        class="btn btn-default btn-icon"
+        (click)="amberDisconnect()"
+        translate=""
+      >
+        <i data-c8y-icon="minus-circle" class="text-danger dlt-c8y-icon-minus-circle"></i>
+        Disconnect
+      </button>
+    </div>
+  </form>
+</c8y-form-group>
