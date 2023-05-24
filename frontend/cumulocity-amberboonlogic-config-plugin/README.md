@@ -12,7 +12,7 @@ Will work only if the respective tenant has amber specific microservice deployed
 
 ## Representation
 
-![Amber Device Configuration](https://user-images.githubusercontent.com/24636020/182811678-ac8df8c7-b368-4fdd-8f70-c2c40f6005aa.PNG)
+![img](img/AmberDeviceConfiguration.png)
 
 ## Supported Product Versions
 
@@ -24,7 +24,7 @@ Will work only if the respective tenant has amber specific microservice deployed
 
 ### Runtime Widget Deployment?
 
-* This widget support runtime deployment. Download **[Runtime Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/)** and use application builder to install your runtime widget.
+* This widget support runtime deployment. Download **[Runtime Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/sag-ps-pkg-boonlogic-config-runtime-widget-2.0.0.zip)** and install via Administrations --> Ecosystems --> Applications --> Packages.
 
 ### Installation of widget through Appbuilder 
 
@@ -168,7 +168,7 @@ Congratulations! BoonLogic Amber setting widget is configured.
 
 ## User Guide
 
-![Amber Device Setting Configuration](https://user-images.githubusercontent.com/24636020/182811792-07a53d74-0dcc-4578-9f31-eccf73757b46.PNG)
+![img](img/AmberDeviceSettingConfiguration.png)
 
 1. Takes microservice name and page size as input.
 2. Microservice when initially deployed will connect to amber using amber - URL/username/password. Where as on widget level if one wants to forcedly cut down the connection to amber we can just click on disconnect or if the amber credentials are changed then for first time we can connect from widget level and microservice will hold the value.

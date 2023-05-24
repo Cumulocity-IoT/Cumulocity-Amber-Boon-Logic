@@ -55,13 +55,9 @@ export class GpBoonlogicConfigComponent implements OnInit {
   async amberConnect(): Promise<void> {
     this.microserviceBoonLogic.listUrl = 'amber-integration/configure';
     this.connectResponse = await this.microserviceBoonLogic.post({
-      amberBoonLogicObj: {
-        amberBoonLogicObj: {
           username: this.config.username,
           password: this.config.password,
           url: this.config.url,
-        },
-      },
     });
     this.status = await this.cms.getAmberConnectionStatus();
     if (this.connectResponse.status === 200) {

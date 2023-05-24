@@ -21,7 +21,7 @@ And when ever AD>0 on click one can see the relavent RCA.
 
 ## Representation
 
-![RCAWidget](https://user-images.githubusercontent.com/24636020/182810536-4a2b243e-c86b-4fa2-b000-583b47b96ee4.png)
+![img](img/RCAWidget.png)
 
 
 ## Supported Product Versions
@@ -36,7 +36,7 @@ And when ever AD>0 on click one can see the relavent RCA.
 
 ### Runtime Widget Deployment?
 
-* This widget support runtime deployment. Download **[Runtime Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/)** and use application builder to install your runtime widget.
+* This widget support runtime deployment. Download **[Runtime Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/sag-ps-pkg-rca-runtime-widget.2.0.0.zip)** and install via Administrations --> Ecosystems --> Applications --> Packages.
 
 ### Installation of widget through Appbuilder 
 
@@ -82,12 +82,12 @@ And when ever AD>0 on click one can see the relavent RCA.
 
       Installation command :  ```npm i chart.js@2.9.3 ``` 
 
-2. Grab the Amber RCA Chart **[Latest Release Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/gp-rca-2.0.0.tgz)**
+2. Grab the Amber RCA Chart **[Latest Release Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/sag-ps-pkg-rca-runtime-widget.2.0.0.zip)**
 
 3. Install the Binary file in app builder.
 
 ```
-npm i <binary  file  path>/gp-rca-2.0.0.tgz
+npm i <binary  file  path>/sag-ps-pkg-rca-runtime-widget.2.0.0.zip
 ```
 4. Open index.less located at /cumulocity-app-builder/ui-assets/
 
@@ -194,7 +194,7 @@ Congratulations! RCA Chart is configured.
 
 ## User Guide
 
-![RCA_Widget_Configuration](https://user-images.githubusercontent.com/24636020/182811609-c6d92bf7-0aae-48c8-87e1-5df99fb698a8.PNG)
+!![img](img/RCA_Widget_Configuration.png)
 
 1. Target Assets/Devices - deviceid of interest(need to be pre configured with Amber)
 2. Select Device Specific relavent RCA measurements - name of the RCA measurements for which you want chart.
