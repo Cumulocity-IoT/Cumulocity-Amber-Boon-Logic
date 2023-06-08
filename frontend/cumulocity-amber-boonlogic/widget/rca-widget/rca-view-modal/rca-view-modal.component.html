@@ -1,0 +1,25 @@
+<div class="modal-header text-center bg-primary">
+  <div ng-transclude="header">
+    <header class="text-white">
+      <h4 class="text-uppercase m-0" style="letter-spacing: 0.15em" translate="">RCA</h4>
+    </header>
+  </div>
+</div>
+<div class="modal-body">
+  <div *ngIf="dataLoaded | async">
+    <div style="display: block">
+      <canvas
+        baseChart
+        [datasets]="barChartData"
+        [labels]="barChartLabels"
+        [colors]="barChartColors"
+        [options]="barChartOptions"
+        [chartType]="barChartType"
+      >
+      </canvas>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" (click)="onCancelClicked()">Cancel</button>
+</div>

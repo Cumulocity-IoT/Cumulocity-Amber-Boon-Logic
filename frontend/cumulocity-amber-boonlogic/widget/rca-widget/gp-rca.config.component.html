@@ -1,0 +1,79 @@
+<form [formGroup]="rcaMeasuremntDeviceForm">
+  <div bg-white card-block large-padding>
+    <label style="padding-top: 20px" for="Measurements" translate="">Select RCA Measurement</label>
+    <div class="form-group">
+      <ng-select
+        required
+        [items]="ListMeasurementType"
+        bindLabel="description"
+        bindValue="description"
+        name="measurementRCASelect"
+        required
+        [multiple]="true"
+        [closeOnSelect]="false"
+        [searchable]="true"
+        placeholder="Select Measurements"
+        appendTo="body"
+        [(ngModel)]="config.selectedRCAMeasurements"
+        formControlName="rcadevicemeasure"
+        (change)="invokeSetRCA()">
+      </ng-select>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="intervalSelect">Interval (max.20 measurements considered)</label>
+    <div class="c8y-select-wrapper">
+      <select
+        formControlName="intervalSelect"
+        id="intervalSelect"
+        class="form-control"
+        [(ngModel)]="config.interval"
+      >
+        <option>Select…</option>
+        <option>Last Hour</option>
+        <option>Last Minute</option>
+      </select>
+      <span></span>
+    </div>
+  </div>
+  <div style="display: flex">
+    <div style="flex-grow: 1; margin-right: 5px">
+      <label translate>Chart Color</label>
+      <input
+        formControlName="chartcolor"
+        class="form-control"
+        type="text"
+        id="colorInput"
+        name="config.color"
+        (click)="openColorPicker()"
+        style="width: 100%"
+        [(ngModel)]="config.color"
+        placeholder="Color code i.e #0899CC or leave blank for default colors"
+      />
+      <app-color-picker
+        [ngClass]="isOpenCP ? 'colorPickerModal' : 'hideColorPicker'"
+        (closeColorPicker)="closeColorPicker()"
+        (colorSet)="setSelectedColor($event)"
+      ></app-color-picker>
+    </div>
+    <div style="flex-grow: 1; margin-right: 5px">
+      <label translate>Border Color</label>
+      <input
+        formControlName="bordercolor"
+        class="form-control"
+        type="text"
+        id="colorInputBorder"
+        name="config.borderColor"
+        (click)="openBorderColorPicker()"
+        style="width: 100%"
+        [(ngModel)]="config.borderColor"
+        placeholder="Choose border color"
+      />
+      <app-color-picker
+        [ngClass]="borderCP ? 'colorPickerModal' : 'hideColorPicker'"
+        (closeColorPicker)="closeBorderColorPicker()"
+        (colorSet)="setSelectedBorderColor($event)"
+      ></app-color-picker>
+    </div>
+  </div>
+</form>
