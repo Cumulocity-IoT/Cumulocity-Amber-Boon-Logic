@@ -30,7 +30,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { ColorPickerComponent } from './color-picker/color-picker-component';
 import { ColorSliderComponent } from './color-picker/color-slider/color-slider-component';
 import { ColorPaletteComponent } from './color-picker/color-palette/color-palette-component';
-import * as preview from './preview-image';
 
 @NgModule({
   declarations: [
@@ -67,7 +66,7 @@ import * as preview from './preview-image';
       useValue: {
         id: 'rca-chart.widget',
         label: 'RCA Chart',
-        previewImage: preview.previewImage,
+        previewImage: require("./.././../images/RCA-widget.png"),
         description: 'Display the RCA whenever AD > 1',
         component: GpRcaComponent,
         configComponent: GpRcaConfigComponent,
