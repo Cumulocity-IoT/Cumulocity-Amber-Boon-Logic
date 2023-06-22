@@ -1,0 +1,809 @@
+<div *ngIf="statusResponse" id="AmberForm" class="card inner-scroll">
+  <h4 class="m-l-24 p-t-8 text-truncate" translate="">Device Configuration</h4>
+  <div class="card-block large-padding">
+    <div style="float: right; margin-right: 10px">
+      <button
+        type="button"
+        class="btn btn-link c8y-realtime"
+        title="Toggle realtime"
+        (click)="toggle()"
+        translate=""
+      >
+        <!-- shows realtime status of Amber connection-->
+        <span
+          *ngIf="statusResponse === 'READY'"
+          class="label label-success m-r-16"
+          title="Enableded"
+          translate=""
+          >{{ statusResponse }}</span
+        >
+        <span
+          *ngIf="statusResponse != 'READY'"
+          class="label label-danger m-r-16"
+          title="Disconnected"
+          translate=""
+        >
+          Disconnected</span
+        >
+        <span [ngClass]="realtimeState ? 'c8y-pulse active' : 'c8y-pulse inactive'"></span>
+        <span class="m-r-8" translate="">Realtime</span>
+      </button>
+      <button
+        style="color: #1776bf; margin-right: 5px"
+        type="button"
+        class="btn btn-clean"
+        (click)="navigateToLog()"
+      >
+        <i c8yIcon="logs"></i>
+      </button>
+      <button
+        style="color: #1776bf; margin-right: 5px"
+        type="button"
+        class="btn btn-clean"
+        (click)="refresh()"
+      >
+        <i c8yIcon="refresh"></i>
+      </button>
+    </div>
+    <button
+      style="margin-top: 16px"
+      type="button"
+      [disabled]="statusResponse != 'READY'"
+      class="btn btn-primary btn-icon"
+      (click)="openModal(template)"
+    >
+      <i c8yIcon="add-new"></i> Add Device
+    </button>
+    <button
+      style="margin-top: 16px"
+      type="button"
+      [disabled]="statusResponse != 'READY'"
+      class="btn btn-primary btn-icon"
+      (click)="StreamAll()"
+    >
+      Start Streaming
+    </button>
+    <button
+      style="margin-top: 16px"
+      type="button"
+      [disabled]="statusResponse != 'READY'"
+      class="btn btn-primary btn-icon"
+      (click)="StreamNone()"
+    >
+      Stop Streaming
+    </button>
+    <table
+      cdk-table=""
+      class="boonlogictable table table-hover able-data-grid table-responsive table-striped table-filtered-sorted large-padding cdk-table table-striped table-data-grid-with-checkboxes table-data-grid-with-actions"
+      *ngIf="DeviceList"
+      style="margin-top: 10px"
+    >
+      <thead>
+        <tr>
+          <th scope="col" translate="">Device</th>
+          <th scope="col" translate="">Name</th>
+          <th scope="col" translate="">Streaming</th>
+          <th scope="col" translate="">State</th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let device of pagedItems; index as i">
+          <td scope="row">
+            {{ device.id }}
+          </td>
+          <td translate="">{{ device.name }}</td>
+          <td>
+            <i
+              data-c8y-icon="check-circle"
+              *ngIf="device.isStreaming === 'true'"
+              class="text-success text-center dlt-c8y-icon-check-circle"
+            >
+            </i>
+            <i
+              data-c8y-icon="cross-circle"
+              *ngIf="device.isStreaming === 'false'"
+              class="text-warning text-center dlt-c8y-icon-cross-circle"
+            >
+            </i>
+          </td>
+          <td>
+            <div *ngIf="device.state === 'Buffering'">
+              <span
+                title="Buffering ( Progress: {{ device.progress }}% )"
+                style="margin-right: 5px; background-color: yellowgreen"
+                class="dot"
+              ></span>
+              <span title="Auto Tuning" style="margin-right: 5px" class="dot"></span>
+              <span title="Learning" style="margin-right: 5px" class="dot"></span>
+              <span title="Monitoring" style="margin-right: 5px" class="dot"></span>
+            </div>
+            <div *ngIf="device.state === 'Autotuning'">
+              <span
+                title="Buffering"
+                style="margin-right: 5px"
+                class="dot badge badge-success"
+              ></span>
+              <span
+                title="Auto Tuning ( Progress: {{ device.progress }}% )"
+                style="margin-right: 5px; background-color: yellowgreen"
+                class="dot"
+              ></span>
+              <span title="Learning" style="margin-right: 5px" class="dot"></span>
+              <span title="Monitoring" style="margin-right: 5px" class="dot"></span>
+            </div>
+            <div *ngIf="device.state === 'Learning'">
+              <span
+                title="Buffering"
+                style="margin-right: 5px"
+                class="dot badge badge-success"
+              ></span>
+              <span
+                title="Auto Tuning"
+                style="margin-right: 5px"
+                class="dot badge badge-success"
+              ></span>
+              <span
+                title="Learning"
+                style="margin-right: 5px; background-color: yellowgreen"
+                class="dot"
+              ></span>
+              <span title="Monitoring" style="margin-right: 5px" class="dot"></span>
+            </div>
+            <div *ngIf="device.state === 'Monitoring'">
+              <span
+                title="Buffering"
+                style="margin-right: 5px"
+                class="dot badge badge-success"
+              ></span>
+              <span
+                title="Auto Tuning"
+                style="margin-right: 5px"
+                class="dot badge badge-success"
+              ></span>
+              <span
+                title="Learning"
+                style="margin-right: 5px"
+                class="dot badge badge-success"
+              ></span>
+              <span
+                title="Monitoring"
+                style="margin-right: 5px; background-color: yellowgreen"
+                class="dot"
+              ></span>
+            </div>
+          </td>
+          <td>
+            <button
+              class="btn btn-dot"
+              [disabled]="device.isStreaming === 'false' || statusResponse != 'READY'"
+              title="Stop Streaming"
+              (click)="openDeRegisterPopup($event, i)"
+            >
+              <i
+                c8yicon="stop"
+                style="font-size: x-large"
+                class="text-danger dlt-c8y-icon-stop"
+              ></i>
+            </button>
+            <div
+              class="modal"
+              tabindex="-1"
+              role="dialog"
+              [ngStyle]="{ display: displayDeRegisterStyle }"
+            >
+              >
+
+              <div style="width: fit-content" class="modal-dialog modal-sm">
+                <div class="modal-content">
+                  <div class="c8y-prompt alert alert-warning" ng-class="[colorStatusClass()]">
+                    <h3 class="m-b-16">
+                      <i
+                        c8y-icon="exclamation-triangle"
+                        class="dlt-c8y-icon-exclamation-triangle"
+                      ></i>
+                      <span ng-show="title" translate="">Stop Processing Measurements</span>
+                    </h3>
+                    <p class="text-break-word" ng-bind-html="body | translate">
+                      You are about to stop processing device measurements . Do you want to proceed?
+                    </p>
+                    <div class="alert-footer">
+                      <button
+                        title="No"
+                        class="btn btn-default"
+                        ng-hide="labels.cancel === null"
+                        (click)="closeDeRegisterPopup()"
+                        translate=""
+                      >
+                        No
+                      </button>
+                      <button
+                        title="Yes"
+                        class="btn btn-primary"
+                        (click)="DeRegisterDevice()"
+                        translate=""
+                      >
+                        Yes
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <button
+              class="btn btn-dot"
+              [disabled]="device.isStreaming === 'true' || statusResponse != 'READY'"
+              title="Start Streaming"
+              (click)="openReRegisterPopup($event, i)"
+            >
+              <i
+                c8yicon="play"
+                style="font-size: x-large"
+                class="text-success dlt-c8y-icon-play"
+              ></i>
+            </button>
+            <div
+              class="modal"
+              tabindex="-1"
+              role="dialog"
+              [ngStyle]="{ display: displayReRegisterStyle }"
+            >
+              <div style="width: fit-content" class="modal-dialog modal-sm">
+                <div class="modal-content">
+                  <div class="c8y-prompt alert alert-info" ng-class="[colorStatusClass()]">
+                    <h3 class="m-b-16">
+                      <i c8y-icon="success" class="dlt-c8y-icon-success"></i>
+                      <span ng-show="title" translate="">Start Processing Measurements</span>
+                    </h3>
+                    <p class="text-break-word" ng-bind-html="body | translate">
+                      You are about to start processing device measurements . Do you want to
+                      proceed?
+                    </p>
+                    <div class="alert-footer">
+                      <button
+                        title="No"
+                        class="btn btn-default"
+                        ng-hide="labels.cancel === null"
+                        (click)="closeReRegisterPopup()"
+                        translate=""
+                      >
+                        No
+                      </button>
+                      <button
+                        title="Yes"
+                        class="btn btn-primary"
+                        (click)="ReRegisterDevice()"
+                        translate=""
+                      >
+                        Yes
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <button
+              class="editbtn btn btn-icon btn-xs btn-default"
+              [disabled]="device.isStreaming === 'true' || statusResponse != 'READY'"
+              title="Edit"
+            >
+              <i
+                c8yicon="pencil"
+                class="dlt-c8y-icon-pencil"
+                (click)="editModal(edittemplate, i)"
+              ></i>
+            </button>
+            <ng-template #edittemplate>
+              <div class="modal-header">
+                <h4 class="modal-title text-normal text-center" translate="">
+                  Update Device Configuration
+                </h4>
+              </div>
+              <div
+                class="modal-body d-grid grid__col--4-4--md"
+                style="margin-top: 10px; margin-bottom: 5px; margin-left: 24px; margin-right: 24px"
+              >
+                <form [formGroup]="editDeviceForm">
+                  <div bg-white card-block large-padding>
+                    <label style="padding-top: 20px" for="Measurements" translate=""
+                      >Select Measurement</label
+                    >
+                    <div class="form-group">
+                      <ng-select
+                        required
+                        [items]="measurementTypeList"
+                        bindLabel="description"
+                        bindValue="description"
+                        name="measurementSelect"
+                        required
+                        [multiple]="true"
+                        [closeOnSelect]="false"
+                        [searchable]="true"
+                        placeholder="Select Measurements"
+                        [(ngModel)]="selectedMeasurements"
+                        formControlName="devicemeasure"
+                        (change)="invokeUpdateSetValue()"
+                      >
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div bg-gray-white card-block large-padding>
+                    <label translate="">Configuration</label>
+                    <div class="tight-grid">
+                      <div class="col-sm-5 col-xs-6">
+                        <div class="form-group">
+                          <label class="text-12" required for="streamingWindowSize" translate=""
+                            >Streaming Window Size
+                            <i
+                              style="float: right"
+                              title="On multiple measurements selected streaming window Size set to default 1."
+                              c8yicon="question-circle"
+                              class="dlt-c8y-icon-question-circle"
+                            ></i
+                          ></label>
+                          <input
+                            formControlName="streamingWindowSize"
+                            type="number"
+                            min="1"
+                            name="streamingWindowSize"
+                            id="streamingWindowSize"
+                            [(ngModel)]="streamingWindowSize"
+                            class="form-control"
+                            placeholder="e.g. 25"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-sm-5 col-xs-6">
+                        <div class="form-group">
+                          <label class="text-12" required for="samplesToBuffer" translate=""
+                            >Autotuning Samples
+                            <i
+                              style="float: right"
+                              title="AutoTuning Samples is set to large enough to include all normal minimum and maximum values for each feature."
+                              c8yicon="question-circle"
+                              class="dlt-c8y-icon-question-circle"
+                            ></i
+                          ></label>
+                          <input
+                            formControlName="samplesToBuffer"
+                            type="number"
+                            min="1"
+                            name="samplesToBuffer"
+                            id="samplesToBuffer"
+                            [(ngModel)]="samplesToBuffer"
+                            class="form-control"
+                            placeholder="e.g. 5000"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-sm-5 col-xs-6">
+                        <div class="form-group">
+                          <label class="text-12" required for="learningRateNumerator" translate=""
+                            >Learning Rate Numerator
+                            <i
+                              style="float: right"
+                              title="Sensor graduates (i.e. transitions from learning to monitoring mode) if fewer than learningRateNumerator new clusters are created in the last learningRateDenominator samples "
+                              c8yicon="question-circle"
+                              class="dlt-c8y-icon-question-circle"
+                            ></i
+                          ></label>
+                          <input
+                            formControlName="learningRateNumerator"
+                            type="number"
+                            min="1"
+                            name="learningRateNumerator"
+                            id="learningRateNumerator"
+                            [(ngModel)]="learningRateNumerator"
+                            class="form-control"
+                            placeholder="e.g. 10"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-sm-5 col-xs-6">
+                        <div class="form-group">
+                          <label class="text-12" required for="learningRateDenominator" translate=""
+                            >Learning Rate Denominator
+                            <i
+                              style="float: right"
+                              title="Sensor graduates (i.e. transitions from learning to monitoring mode) if fewer than learningRateNumerator new clusters are created in the last learningRateDenominator samples "
+                              c8yicon="question-circle"
+                              class="dlt-c8y-icon-question-circle"
+                            ></i
+                          ></label>
+                          <input
+                            formControlName="learningRateDenominator"
+                            type="number"
+                            min="1"
+                            name="learningRateDenominator"
+                            id="learningRateDenominator"
+                            [(ngModel)]="learningRateDenominator"
+                            class="form-control"
+                            placeholder="e.g. 10000"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-sm-5 col-xs-6">
+                        <div class="form-group">
+                          <label class="text-12" required for="learningMaxSamples" translate=""
+                            >Learning Samples
+                            <i
+                              style="float: right"
+                              title="Learning samples are the samples used to Train the Amber model. Amber learns what normal variation and normal operation look like for the asset."
+                              c8yicon="question-circle"
+                              class="dlt-c8y-icon-question-circle"
+                            ></i
+                          ></label>
+                          <input
+                            formControlName="learningMaxSamples"
+                            type="number"
+                            min="1"
+                            name="learningMaxSamples"
+                            id="learningMaxSamples"
+                            [(ngModel)]="learningMaxSamples"
+                            class="form-control"
+                            placeholder="e.g. 10000"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-sm-5 col-xs-6">
+                        <div class="form-group">
+                          <label class="text-12" required for="anomalyHistoryWindow" translate=""
+                            >Anomaly History Window
+                            <i
+                              style="float: right"
+                              title="gives the number of samples to use as the window for determining that normal amount of anomalies. This value should be decently large so that the variation can occur normally"
+                              c8yicon="question-circle"
+                              class="dlt-c8y-icon-question-circle"
+                            ></i
+                          ></label>
+                          <input
+                            formControlName="anomalyHistoryWindow"
+                            type="number"
+                            min="1"
+                            name="anomalyHistoryWindow"
+                            id="anomalyHistoryWindow"
+                            [(ngModel)]="anomalyHistoryWindow"
+                            class="form-control"
+                            placeholder="e.g. 1000"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <div class="pull-right">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="closeUpdateSensor()"
+                    translate=""
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    [disabled]="!selectedMeasurements"
+                    class="btn btn-primary"
+                    (click)="updateSensor()"
+                    translate=""
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </ng-template>
+          </td>
+          <td>
+            <button
+              class="btn btn-dot"
+              [disabled]="statusResponse != 'READY'"
+              title="Delete"
+              (click)="openDeletePopup($event, i)"
+            >
+              <i c8yicon="delete-bin" class="text-danger dlt-c8y-icon-delete-bin"></i>
+            </button>
+            <div
+              class="modal"
+              tabindex="-1"
+              role="dialog"
+              [ngStyle]="{ display: displayDeleteStyle }"
+            >
+              >
+
+              <div style="width: fit-content" class="modal-dialog modal-sm">
+                <div class="modal-content">
+                  <div class="c8y-prompt alert alert-danger" ng-class="[colorStatusClass()]">
+                    <h3 class="m-b-16">
+                      <i
+                        c8y-icon="exclamation-triangle"
+                        class="dlt-c8y-icon-exclamation-triangle"
+                      ></i>
+                      <span ng-show="title" translate="">Delete Device</span>
+                    </h3>
+                    <p class="text-break-word" ng-bind-html="body | translate">
+                      You are about to Permanetly disconnect device from Amber. Do you want to
+                      proceed?
+                    </p>
+                    <div class="alert-footer">
+                      <button
+                        title="No"
+                        class="btn btn-default"
+                        ng-hide="labels.cancel === null"
+                        (click)="closeDeletePopup()"
+                        translate=""
+                      >
+                        No
+                      </button>
+                      <button
+                        title="Yes"
+                        class="btn btn-primary"
+                        (click)="DeleteDevice()"
+                        translate=""
+                      >
+                        Yes
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <pagination
+      class="m-t-8 m-r-8 p-b-8 pull-right"
+      previousText=" "
+      nextText=" "
+      [totalItems]="DeviceList.length"
+      [itemsPerPage]="itemsPerPage"
+      [boundaryLinks]="true"
+      [directionLinks]="true"
+      [maxSize]="5"
+      [(ngModel)]="page"
+      name="page"
+      (pageChanged)="pageChanged($event)"
+      (pageBoundsCorrection)="pageChanged($event)"
+    ></pagination>
+  </div>
+  <ng-template #template>
+    <div class="modal-header">
+      <h4 class="modal-title text-normal text-center" translate="">Configure Device</h4>
+    </div>
+    <div
+      class="modal-body d-grid grid__col--3-1-4--md"
+      style="margin-top: 10px; margin-bottom: 5px; margin-left: 24px; margin-right: 24px"
+    >
+      <form [formGroup]="addDeviceForm">
+        <div bg-white card-block large-padding>
+          <label translate="">Target assets or devices</label>
+          <div
+            id="smartDeviceSearch"
+            class="input-group form-group input-group-search"
+            style="display: inline-flex"
+          >
+            <input
+              id="smartDevice"
+              name="smartDevice"
+              required="required"
+              class="form-control"
+              [typeahead]="suggestions$"
+              (typeaheadLoading)="changeTypeaheadLoading($event)"
+              [typeaheadAsync]="true"
+              typeaheadWaitMs="500"
+              typeaheadOptionField="name"
+              [(ngModel)]="model"
+              (typeaheadOnSelect)="deviceSelected($event.item)"
+              [isAnimated]="true"
+              autocomplete="off"
+              [typeaheadOptionsLimit]="5"
+              [typeaheadMinLength]="3"
+              placeholder="Search Device"
+              type="search"
+              formControlName="devicename"
+            />
+            <span class="input-group-addon" style="margin-right: 20px">
+              <i c8yIcon="search" *ngIf="!value || value.length === 0"></i>
+              <i
+                c8yIcon="times"
+                class="text-muted"
+                *ngIf="model && model.length > 0"
+                (click)="model = ''"
+              ></i>
+            </span>
+            <div *ngIf="searching" style="margin: 5px">
+              <i class="fa fa-circle-o-notch fa-spin"></i>
+            </div>
+          </div>
+          <label style="padding-top: 5px" for="Measurements" translate="">Select Measurement</label>
+          <div class="form-group">
+            <ng-select
+              formControlName="devicemeasure"
+              required
+              [items]="measurementTypeList"
+              bindLabel="description"
+              bindValue="description"
+              name="measurementSelect"
+              required
+              [multiple]="true"
+              [closeOnSelect]="false"
+              [searchable]="true"
+              placeholder="Select Measurements"
+              [(ngModel)]="selectedMeasurements"
+              (change)="invokeSetValue()"
+            >
+            </ng-select>
+          </div>
+        </div>
+        <div bg-gray-white card-block large-padding>
+          <label translate="">Configuration</label>
+          <div class="tight-grid">
+            <div class="col-sm-5 col-xs-6">
+              <div class="form-group">
+                <label class="text-12" required for="streamingWindowSize" translate=""
+                  >Streaming Window Size
+                  <i
+                    style="float: right"
+                    title="On multiple measurements selected streaming window Size set to default 1."
+                    c8yicon="question-circle"
+                    class="dlt-c8y-icon-question-circle"
+                  ></i
+                ></label>
+                <input
+                  formControlName="streamingWindowSize"
+                  type="number"
+                  min="1"
+                  name="streamingWindowSize"
+                  id="streamingWindowSize"
+                  [(ngModel)]="streamingWindowSize"
+                  class="form-control"
+                  placeholder="e.g. 25"
+                />
+              </div>
+            </div>
+            <div class="col-sm-5 col-xs-6">
+              <div class="form-group">
+                <label class="text-12" required for="samplesToBuffer" translate=""
+                  >Autotuning Samples
+                  <i
+                    style="float: right"
+                    title="AutoTuning Samples is set to large enough to include all normal minimum and maximum values for each feature."
+                    c8yicon="question-circle"
+                    class="dlt-c8y-icon-question-circle"
+                  ></i
+                ></label>
+                <input
+                  formControlName="samplesToBuffer"
+                  type="number"
+                  min="1"
+                  name="samplesToBuffer"
+                  id="samplesToBuffer"
+                  [(ngModel)]="samplesToBuffer"
+                  class="form-control"
+                  placeholder="e.g. 5000"
+                />
+              </div>
+            </div>
+            <div class="col-sm-5 col-xs-6">
+              <div class="form-group">
+                <label class="text-12" required for="learningRateNumerator" translate=""
+                  >Learning Rate Numerator
+                  <i
+                    style="float: right"
+                    title="Sensor graduates (i.e. transitions from learning to monitoring mode) if fewer than learningRateNumerator new clusters are created in the last learningRateDenominator samples."
+                    c8yicon="question-circle"
+                    class="dlt-c8y-icon-question-circle"
+                  ></i
+                ></label>
+                <input
+                  formControlName="learningRateNumerator"
+                  type="number"
+                  min="1"
+                  name="learningRateNumerator"
+                  id="learningRateNumerator"
+                  [(ngModel)]="learningRateNumerator"
+                  class="form-control"
+                  placeholder="e.g. 10"
+                />
+              </div>
+            </div>
+            <div class="col-sm-5 col-xs-6">
+              <div class="form-group">
+                <label class="text-12" required for="learningRateDenominator" translate=""
+                  >Learning Rate Denominator
+                  <i
+                    style="float: right"
+                    title="Sensor graduates (i.e. transitions from learning to monitoring mode) if fewer than learningRateNumerator new clusters are created in the last learningRateDenominator samples."
+                    c8yicon="question-circle"
+                    class="dlt-c8y-icon-question-circle"
+                  ></i
+                ></label>
+                <input
+                  formControlName="learningRateDenominator"
+                  type="number"
+                  min="1"
+                  name="learningRateDenominator"
+                  id="learningRateDenominator"
+                  [(ngModel)]="learningRateDenominator"
+                  class="form-control"
+                  placeholder="e.g. 100000"
+                />
+              </div>
+            </div>
+            <div class="col-sm-5 col-xs-6">
+              <div class="form-group">
+                <label class="text-12" required for="learningMaxSamples" translate=""
+                  >Learning Samples
+                  <i
+                    style="float: right"
+                    title="Learning samples are the samples used to Train the Amber model. Amber learns what normal variation and normal operation look like for the asset."
+                    c8yicon="question-circle"
+                    class="dlt-c8y-icon-question-circle"
+                  ></i
+                ></label>
+                <input
+                  formControlName="learningMaxSamples"
+                  type="number"
+                  min="1"
+                  name="learningMaxSamples"
+                  id="learningMaxSamples"
+                  [(ngModel)]="learningMaxSamples"
+                  class="form-control"
+                  placeholder="e.g. 10000"
+                />
+              </div>
+            </div>
+            <div class="col-sm-5 col-xs-6">
+              <div class="form-group">
+                <label class="text-12" required for="anomalyHistoryWindow" translate=""
+                  >Anomaly History Window
+                  <i
+                    style="float: right"
+                    title="gives the number of samples to use as the window for determining that normal amount of anomalies. This value should be decently large so that the variation can occur normally"
+                    c8yicon="question-circle"
+                    class="dlt-c8y-icon-question-circle"
+                  ></i
+                ></label>
+                <input
+                  formControlName="anomalyHistoryWindow"
+                  type="number"
+                  min="1"
+                  name="anomalyHistoryWindow"
+                  id="anomalyHistoryWindow"
+                  [(ngModel)]="anomalyHistoryWindow"
+                  class="form-control"
+                  placeholder="e.g. 1000"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <div class="pull-right">
+        <button type="button" class="btn btn-primary" (click)="closeCreateSensor()" translate="">
+          Cancel
+        </button>
+        <button
+          type="button"
+          [disabled]="!selectedMeasurements"
+          class="btn btn-primary"
+          (click)="createSensor()"
+          translate=""
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</div>
