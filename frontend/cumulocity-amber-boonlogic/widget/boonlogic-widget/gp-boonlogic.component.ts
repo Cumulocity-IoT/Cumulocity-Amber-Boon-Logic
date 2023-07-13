@@ -91,6 +91,8 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
   configDevice: any;
   measurementType: any;
   measurementTypeList: any;
+  chmeasurementTypeList: any;
+  prmeasurementTypeList: any;
   allSubscriptions: any = [];
   realtimeState = true;
   page = 1;
@@ -108,9 +110,12 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
   displayDeleteStyle!: any;
   displayStreamAllStyle!: any;
   displayStreamNoneStyle!: any;
+  childDevices: any;
+  selectedChildDevices:[];
 
   addDeviceForm = new FormGroup({
     devicename: new FormControl(),
+    childDevices_: new FormControl(),
     devicemeasure: new FormControl(),
     streamingWindowSize: new FormControl({ value: 25, disabled: false }),
     samplesToBuffer: new FormControl(),
@@ -134,6 +139,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
   allApplications!: IApplication[];
   userHasAdminRights!: boolean;
   submitted!: any;
+  childDevicesLength:number =0;
 
   constructor(
     private microserviceBoonLogic: GpBoonlogicService,
@@ -344,23 +350,28 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
    * Save device id and name when device is selected
    */
   async deviceSelected(device: DeviceConfig): Promise<string | -1> {
+    this.childDevicesLength=0;
     if (device) {
-      this.sel = true;
+      this.childDevices=[...device.childDevices.references];
+      this.childDevicesLength=device.childDevices.references.length;
+     //console.log(this.childDevicesLength)
+     console.log("ChildDevices",this.childDevices)
+     this.sel = true;
       this.Selecteddevice = { name: '', id: '' };
       this.Selecteddevice.name = device.name;
       this.Selecteddevice.id = device.id;
       this.measurementList = [];
-      this.getmeasurement();
+     this.getcombinemeasurement(device);
       return device.name;
     } else {
       return -1;
     }
   }
 
-  async getmeasurement(): Promise<void> {
-    if (this.Selecteddevice && this.Selecteddevice.id) {
-      this.configDevice = this.Selecteddevice.id;
-      const response = await this.cmonSvc.getTargetObject(this.configDevice);
+  async getcombinemeasurement(chdevice: DeviceConfig): Promise<void> {
+    if (chdevice && chdevice.id) {
+      this.configDevice = chdevice.id;
+      let response = await this.cmonSvc.getTargetObject(chdevice.id);
       await this.getFragmentSeries(response, this.measurementList, this.observableMeasurements$);
       if (!this.measurementType) {
         this.measurementType = {};
@@ -374,19 +385,25 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
           }
         }
       }
-
       // Get the measurements as soon as device or group is selected
       this.measurementSubs = this.observableMeasurements$
         .pipe(skip(1))
         // tslint:disable-next-line: deprecation
-        .subscribe((mes: string | any[]) => {
-          this.measurementTypeList = [];
-          if (mes && mes.length > 0) {
-            this.measurementTypeList = [...mes];
-          }
+        .subscribe((chmes: string | any[]) => {
+          this.chmeasurementTypeList = [];
+          if (chmes) {
+            console.log("chmes",chmes)
+            this.chmeasurementTypeList = [...chmes];
+            this.measurementTypeList=[...chmes];
+            console.log("mes",this.measurementTypeList)
+          }          
         });
-    }
+        
+    } 
   }
+
+
+
   /**
    * This method used in configuration of this widget to populate available measurements for given device id or group id
    */
@@ -567,6 +584,25 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
       this.streamingWindowSize = 25;
       this.addDeviceForm.controls.streamingWindowSize.enable();
     }
+  }
+
+  async invokechildDevices(): Promise<void> {
+    this.featurecount = 0;
+    this.featurecount = this.selectedChildDevices.length;
+    console.log("selected child list",this.selectedChildDevices)
+    if(this.selectedChildDevices)
+    {
+      for(let ch of this.selectedChildDevices)
+      {
+        console.log("ch",ch)
+        const response = await this.cmonSvc.getTargetObject(ch);
+        console.log("response",response)
+        this.configDevice = ch;
+      this.measurementList = [];
+      this.getcombinemeasurement(response)
+      }
+    }
+    
   }
 
   invokeUpdateSetValue(): void {
@@ -888,4 +924,5 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
 export interface DeviceConfig {
   id: string;
   name: string;
+  childDevices:any;
 }

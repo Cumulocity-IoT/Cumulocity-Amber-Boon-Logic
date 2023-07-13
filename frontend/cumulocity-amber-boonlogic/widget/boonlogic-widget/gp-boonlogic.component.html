@@ -624,6 +624,37 @@
               <i class="fa fa-circle-o-notch fa-spin"></i>
             </div>
           </div>
+          <div *ngIf="this.childDevicesLength > 0">
+           <div class="row col-sm-12">
+              <div class="btn-group device-list-switch-toggle ">
+                <label class="c8y-switch ">
+                  <input type="checkbox" [checked]="includeChildDevice" (change)="includeChildDevice = !includeChildDevice">
+                  <span></span> Include child Devices
+                </label>
+              </div>
+            </div>
+            </div>
+          <div *ngIf="includeChildDevice && this.childDevicesLength > 0">
+          <label translate="">Select child devices</label>
+          <div class="form-group">
+            <ng-select
+              formControlName="childDevices_"
+              required
+              [items]="childDevices"
+              bindLabel="managedObject.name"
+              bindValue="managedObject.id"
+              name="childDeviceSelect"
+              required
+              [multiple]="true"
+              [closeOnSelect]="false"
+              [searchable]="true"
+              placeholder="Select Child Devices"
+              [(ngModel)]="selectedChildDevices"
+              (change)="invokechildDevices()"
+            >
+            </ng-select>
+          </div>
+          </div>
           <label style="padding-top: 5px" for="Measurements" translate="">Select Measurement</label>
           <div class="form-group">
             <ng-select
