@@ -6,7 +6,7 @@
 
     <groupId>com.softwareag.amber</groupId>
     <artifactId>amber-integration</artifactId>
-    <version>0.0.21</version>
+    <version>0.0.22</version>
 
 
     <name>amber-integration</name>
@@ -19,7 +19,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <spring-boot-dependencies.version>2.2.4.RELEASE</spring-boot-dependencies.version>
 
-        <c8y.version>1011.0.0</c8y.version>
+        <c8y.version>1013.0.0</c8y.version>
 
         <lombok.version>1.18.10</lombok.version>
         <jackson.version>2.9.9</jackson.version>
@@ -29,7 +29,7 @@
 
         <microservice.name>amber-integration</microservice.name>
         <agent.main.class>com.softwareag.amber.App</agent.main.class>
-        <c8y.docker.skip>false</c8y.docker.skip>
+        <c8y.docker.skip>true</c8y.docker.skip>
     </properties>
 
     <repositories>
@@ -133,5 +133,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
