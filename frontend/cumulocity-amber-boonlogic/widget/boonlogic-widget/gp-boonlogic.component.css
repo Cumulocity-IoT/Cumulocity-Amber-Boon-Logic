@@ -1,0 +1,70 @@
+.input {
+  display: inline;
+  width: fit-content;
+  font-size: 16px;
+  font-family: Times;
+  size: '70';
+}
+
+.display-status-success {
+  color: green;
+}
+
+.display-status-danger {
+  color: red;
+}
+
+.display-status-color {
+  background-color: green;
+}
+
+.dot {
+  height: 20px;
+  width: 20px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.boonlogictable {
+  background-color: var(--component-background, #fff);
+}
+
+.boonlogictable th {
+  color: var(--component-label-color, #333);
+}
+.boonlogictable tr {
+  color: var(--component-color, #000);
+}
+.boonlogictable tr:hover {
+  color: var(--component-brand-primary, #000);
+}
+.editbtn {
+  color: black !important;
+  border-color: var(--component-border, #f2f3f4);
+}
+.pagination>li:last-child>a, .pagination>li:last-child>span {
+  border-bottom-right-radius: calc(var(--form-control-height-base, 32px)*.5);
+  border-top-right-radius: calc(var(--form-control-height-base, 32px)*.5);
+}
+
+.pagination>li:first-child>a, .pagination>li:first-child>span {
+  border-bottom-left-radius: calc(var(--form-control-height-base, 32px)*.5);
+  border-top-left-radius: calc(var(--form-control-height-base, 32px)*.5);
+  margin-left: 0
+}
+
+
+.pagination>.disabled>a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover, .pagination>.disabled>span, .pagination>.disabled>span:focus, .pagination>.disabled>span:hover {
+  background-color: var(--component-background,var(--root-component-background,#fff));
+  border-color: var(--component-disabled-color,var(--root-component-disabled-color,var(--gray-7,#b0b9bf)));
+  color: var(--component-disabled-color,var(--root-component-disabled-color,var(--gray-7,#b0b9bf)));
+  cursor: not-allowed;
+  min-height: 31px;
+}
+.pagination>li:last-child>a, .pagination>li:last-child>span{
+  text-indent: 0;
+ }
+ .pagination>li:first-child>a, .pagination>li:first-child>span {
+  text-indent: 0;
+}

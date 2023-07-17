@@ -1,0 +1,38 @@
+<!-- <mat-radio-group aria-label="Select an option" (change) ="colorType = $event.value" >
+  <mat-radio-button  checked="true" value="rgba">RGBA</mat-radio-button>
+  <mat-radio-button value="hexa">HEXA</mat-radio-button>
+</mat-radio-group> -->
+<div class="form-group">
+  <label class="c8y-radio radio-inline">
+    <input
+      type="radio"
+      checked="checked"
+      value="rgba"
+      name="color-radio-group"
+      (change)="colorType = $event.value"
+    />
+    <span></span>
+    <span> RGBA </span>
+  </label>
+  <label class="c8y-radio radio-inline">
+    <input type="radio" value="hexa" name="color-radio-group" (change)="colorType = $event.value" />
+    <span></span>
+    <span> HEXA</span>
+  </label>
+</div>
+<div class="color-wrapper">
+  <app-color-palette [hue]="hue" (color)="color = $event"></app-color-palette>
+  <app-color-slider (color)="hue=$event" style="margin-left: 16px"></app-color-slider>
+  <div class="colorPickerFooter">
+    <button class="btn btn-default" style="margin-bottom: 5px">Cancel</button>
+    <br />
+    <button class="btn btn-primary" (click)="applyColorClicked()">Apply</button>
+  </div>
+</div>
+<!-- <div class="input-wrapper">
+    <span class="text">{{color}}</span>
+    <div
+      class="color-div"
+      [ngStyle]="{'background-color': color || 'white'}"
+    ></div>
+  </div> -->
