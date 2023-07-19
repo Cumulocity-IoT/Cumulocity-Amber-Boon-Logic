@@ -624,12 +624,12 @@
               <i class="fa fa-circle-o-notch fa-spin"></i>
             </div>
           </div>
-          <div *ngIf="this.childDevicesLength > 0">
+          <div class="input-group form-group" *ngIf="this.childDevicesLength > 0">
            <div class="row col-sm-12">
               <div class="btn-group device-list-switch-toggle ">
                 <label class="c8y-switch ">
                   <input type="checkbox" [checked]="includeChildDevice" (change)="includeChildDevice = !includeChildDevice">
-                  <span></span> Include child Devices
+                  <span></span> <label translate="">Include child Devices</label>
                 </label>
               </div>
             </div>

@@ -91,8 +91,6 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
   configDevice: any;
   measurementType: any;
   measurementTypeList: any;
-  chmeasurementTypeList: any;
-  prmeasurementTypeList: any;
   allSubscriptions: any = [];
   realtimeState = true;
   page = 1;
@@ -352,11 +350,12 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
   async deviceSelected(device: DeviceConfig): Promise<string | -1> {
     this.childDevicesLength=0;
     if (device) {
+      //console.log("Device",device)
       this.childDevices=[...device.childDevices.references];
       this.childDevicesLength=device.childDevices.references.length;
-     //console.log(this.childDevicesLength)
-     console.log("ChildDevices",this.childDevices)
-     this.sel = true;
+      //console.log(this.childDevicesLength)
+      //console.log("ChildDevices",this.childDevices)
+      //this.sel = true;
       this.Selecteddevice = { name: '', id: '' };
       this.Selecteddevice.name = device.name;
       this.Selecteddevice.id = device.id;
@@ -368,10 +367,11 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
     }
   }
 
-  async getcombinemeasurement(chdevice: DeviceConfig): Promise<void> {
-    if (chdevice && chdevice.id) {
-      this.configDevice = chdevice.id;
-      let response = await this.cmonSvc.getTargetObject(chdevice.id);
+  async getcombinemeasurement(device: DeviceConfig): Promise<void> {
+    if (device && device.id) {
+      this.configDevice = device.id;
+      let response = await this.cmonSvc.getTargetObject(device.id);
+      //console.log("chresponse",response)
       await this.getFragmentSeries(response, this.measurementList, this.observableMeasurements$);
       if (!this.measurementType) {
         this.measurementType = {};
@@ -389,21 +389,13 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
       this.measurementSubs = this.observableMeasurements$
         .pipe(skip(1))
         // tslint:disable-next-line: deprecation
-        .subscribe((chmes: string | any[]) => {
-          this.chmeasurementTypeList = [];
-          if (chmes) {
-            console.log("chmes",chmes)
-            this.chmeasurementTypeList = [...chmes];
-            this.measurementTypeList=[...chmes];
-            console.log("mes",this.measurementTypeList)
+        .subscribe((mes: string | any[]) => {
+          if (mes && mes.length > 0) {
+            this.measurementTypeList = [...mes];
           }          
         });
-        
     } 
   }
-
-
-
   /**
    * This method used in configuration of this widget to populate available measurements for given device id or group id
    */
@@ -449,7 +441,8 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
                     fragementList = this.getFragementList(
                       fragementList,
                       fragmentSeries.c8y_SupportedSeries,
-                      supportedMeasurements.c8y_SupportedMeasurements
+                      supportedMeasurements.c8y_SupportedMeasurements,
+                      aDevice
                     );
                   }
                 }
@@ -463,6 +456,8 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
           } else {
             const supportedMeasurements = await this.getSupportedMeasurementsForDevice(aDevice.id);
             const fragmentSeries = await this.getSupportedSeriesForDevice(aDevice.id);
+            //console.log("fragment Series",fragmentSeries)
+            //console.log("supported Measurements",supportedMeasurements)
             if (
               fragmentSeries &&
               fragmentSeries.c8y_SupportedSeries &&
@@ -472,7 +467,8 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
               fragementList = this.getFragementList(
                 fragementList,
                 fragmentSeries.c8y_SupportedSeries,
-                supportedMeasurements.c8y_SupportedMeasurements
+                supportedMeasurements.c8y_SupportedMeasurements,
+                aDevice
               );
             }
             observableFragment$.next(fragementList);
@@ -489,7 +485,8 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
   private getFragementList(
     fragementList: any,
     fragmentSeries: any,
-    supportedMeasurements: any
+    supportedMeasurements: any,
+    device:any
   ): any {
     if (fragementList) {
       fragmentSeries.forEach((fs: string) => {
@@ -500,13 +497,15 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
           const fsName = fs.replace(measurementType[0] + '.', '');
           const fsType = measurementType[0];
           const existingF = fragementList.find(
-            (sm: { type: any; name: string }) => sm.type === fsType && sm.name === fsName
+            (sm: { type: any; name: string ;id:string;}) => sm.type === fsType && (sm.id===device.id && sm.name === fsName)
           );
+          fs = fs + "(" + device.name + ")";
           if (!existingF || existingF == null) {
             fragementList.push({
               name: fsName,
               type: fsType,
               description: fs,
+              id:device.id
             });
           }
         }
@@ -523,10 +522,12 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
             name: fsName,
             type: fsType,
             description: fs,
+            id:device.id
           });
         }
       });
     }
+    //console.log("Fragment list",fragementList)
     return fragementList;
   }
   // Get Supported Series for given device id/
@@ -587,16 +588,14 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   async invokechildDevices(): Promise<void> {
-    this.featurecount = 0;
-    this.featurecount = this.selectedChildDevices.length;
-    console.log("selected child list",this.selectedChildDevices)
+    //console.log("selected child list",this.selectedChildDevices)
     if(this.selectedChildDevices)
     {
       for(let ch of this.selectedChildDevices)
       {
-        console.log("ch",ch)
+        //console.log("ch",ch)
         const response = await this.cmonSvc.getTargetObject(ch);
-        console.log("response",response)
+        //console.log("response",response)
         this.configDevice = ch;
       this.measurementList = [];
       this.getcombinemeasurement(response)
@@ -630,15 +629,22 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
     } else {
       this.deviceMeasurements = [];
       let mstype = '';
+      let msId = '';
+      let msSeries = '';
+      //console.log("Selected Measurements",this.selectedMeasurements)
+      //console.log("Selected child devices",this.selectedChildDevices)
       if (this.selectedMeasurements) {
         this.selectedMeasurements.forEach((ms: string) => {
-          this.measurementList.forEach((ml: any) => {
+          this.measurementTypeList.forEach((ml: any) => {
             if (ml.description === ms) {
               mstype = ml.type;
+              msId = ml.id;
+              msSeries = ml.name;
+              //console.log("sensor ms",ml)
             }
           });
           const values = ms.split('.', 2);
-          const arr = { type: mstype, fragment: values[0], series: values[1] };
+          const arr = { type: mstype, fragment: values[0], series: msSeries, deviceId:msId };
           this.deviceMeasurements.push(arr);
         });
         // Micorservice configration Parameters initialization
@@ -653,10 +659,14 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
           anomalyHistoryWindow: this.anomalyHistoryWindow || 1000,
         };
         this.microserviceBoonLogic.listUrl = 'amber-integration/sensors';
+        //console.log("configuration",config)
+        //console.log("id",this.Selecteddevice.id)
+        //console.log("datapoints",this.deviceMeasurements)
         this.createResponse = await this.microserviceBoonLogic.post({
           id: this.Selecteddevice.id,
           configuration: config,
           dataPoints: this.deviceMeasurements,
+          childDevices:this.selectedChildDevices
         });
         await this.loadSpecificFragmentDevice();
         if (this.createResponse.status === 201 || this.createResponse.status === 200) {
