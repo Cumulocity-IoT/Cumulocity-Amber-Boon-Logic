@@ -610,6 +610,7 @@
               placeholder="Search Device"
               type="search"
               formControlName="devicename"
+              (change)="invokeParentDevice($event)"
             />
             <span class="input-group-addon" style="margin-right: 20px">
               <i c8yIcon="search" *ngIf="!value || value.length === 0"></i>
@@ -628,7 +629,7 @@
            <div class="row col-sm-12">
               <div class="btn-group device-list-switch-toggle ">
                 <label class="c8y-switch ">
-                  <input type="checkbox" [checked]="includeChildDevice" (change)="includeChildDevice = !includeChildDevice">
+                  <input type="checkbox" (change)="onCheckboxChange($event)" [checked]="includeChildDevice">
                   <span></span> <label translate="">Include child Devices</label>
                 </label>
               </div>
@@ -650,7 +651,7 @@
               [searchable]="true"
               placeholder="Select Child Devices"
               [(ngModel)]="selectedChildDevices"
-              (change)="invokechildDevices()"
+              (change)="invokeChildDevices($event)"
             >
             </ng-select>
           </div>
