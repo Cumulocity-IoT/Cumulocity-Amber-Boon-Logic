@@ -292,18 +292,18 @@
             <button
               class="editbtn btn btn-icon btn-xs btn-default"
               [disabled]="device.isStreaming === 'true' || statusResponse != 'READY'"
-              title="Edit"
+              title="View"
             >
               <i
-                c8yicon="pencil"
-                class="dlt-c8y-icon-pencil"
+                c8yicon="eye"
+                class="dlt-c8y-icon-eye"
                 (click)="editModal(edittemplate, i)"
               ></i>
             </button>
             <ng-template #edittemplate>
               <div class="modal-header">
                 <h4 class="modal-title text-normal text-center" translate="">
-                  Update Device Configuration
+                  View Device Configuration
                 </h4>
               </div>
               <div
@@ -323,7 +323,7 @@
                         bindValue="description"
                         name="measurementSelect"
                         required
-                        [multiple]="true"
+                        [multiple]="false"
                         [closeOnSelect]="false"
                         [searchable]="true"
                         placeholder="Select Measurements"
@@ -488,16 +488,16 @@
                     translate=""
                   >
                     Cancel
-                  </button>
-                  <button
-                    type="button"
-                    [disabled]="!selectedMeasurements"
-                    class="btn btn-primary"
-                    (click)="updateSensor()"
-                    translate=""
-                  >
-                    Submit
-                  </button>
+                    </button>
+                    <!-- <button
+                      type="button"
+                      [disabled]="!selectedMeasurements"
+                      class="btn btn-primary"
+                      (click)="updateSensor()"
+                      translate=""
+                    >
+                      Submit
+                    </button> -->
                 </div>
               </div>
             </ng-template>
