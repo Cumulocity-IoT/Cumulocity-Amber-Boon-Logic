@@ -291,7 +291,7 @@
           <td>
             <button
               class="editbtn btn btn-icon btn-xs btn-default"
-              [disabled]="device.isStreaming === 'true' || statusResponse != 'READY'"
+              [enable]="device.isStreaming === 'false' || statusResponse != 'READY'"
               title="View"
             >
               <i
@@ -306,6 +306,7 @@
                   View Device Configuration
                 </h4>
               </div>
+              
               <div
                 class="modal-body d-grid grid__col--4-4--md"
                 style="margin-top: 10px; margin-bottom: 5px; margin-left: 24px; margin-right: 24px"
@@ -316,22 +317,22 @@
                       >Select Measurement</label
                     >
                     <div class="form-group">
-                      <ng-select
+                      <ng-select 
                         required
                         [items]="measurementTypeList"
                         bindLabel="description"
                         bindValue="description"
                         name="measurementSelect"
                         required
-                        [multiple]="false"
+                        [multiple]="true"
                         [closeOnSelect]="false"
                         [searchable]="true"
                         placeholder="Select Measurements"
                         [(ngModel)]="selectedMeasurements"
                         formControlName="devicemeasure"
                         (change)="invokeUpdateSetValue()"
-                      >
-                      </ng-select>
+                        [readonly]="true" >
+                    </ng-select>
                     </div>
                   </div>
                   <div bg-gray-white card-block large-padding>
@@ -348,7 +349,7 @@
                               class="dlt-c8y-icon-question-circle"
                             ></i
                           ></label>
-                          <input
+                          <input 
                             formControlName="streamingWindowSize"
                             type="number"
                             min="1"
@@ -357,7 +358,7 @@
                             [(ngModel)]="streamingWindowSize"
                             class="form-control"
                             placeholder="e.g. 25"
-                          />
+                            readonly/>
                         </div>
                       </div>
                       <div class="col-sm-5 col-xs-6">
@@ -380,7 +381,7 @@
                             [(ngModel)]="samplesToBuffer"
                             class="form-control"
                             placeholder="e.g. 5000"
-                          />
+                            readonly  />
                         </div>
                       </div>
                       <div class="col-sm-5 col-xs-6">
@@ -403,7 +404,7 @@
                             [(ngModel)]="learningRateNumerator"
                             class="form-control"
                             placeholder="e.g. 10"
-                          />
+                            readonly />
                         </div>
                       </div>
                       <div class="col-sm-5 col-xs-6">
@@ -426,7 +427,7 @@
                             [(ngModel)]="learningRateDenominator"
                             class="form-control"
                             placeholder="e.g. 10000"
-                          />
+                            readonly />
                         </div>
                       </div>
                       <div class="col-sm-5 col-xs-6">
@@ -449,7 +450,7 @@
                             [(ngModel)]="learningMaxSamples"
                             class="form-control"
                             placeholder="e.g. 10000"
-                          />
+                            readonly />
                         </div>
                       </div>
                       <div class="col-sm-5 col-xs-6">
@@ -472,7 +473,7 @@
                             [(ngModel)]="anomalyHistoryWindow"
                             class="form-control"
                             placeholder="e.g. 1000"
-                          />
+                            readonly/>
                         </div>
                       </div>
                     </div>
@@ -487,7 +488,7 @@
                     (click)="closeUpdateSensor()"
                     translate=""
                   >
-                    Cancel
+                    OK
                     </button>
                     <!-- <button
                       type="button"
