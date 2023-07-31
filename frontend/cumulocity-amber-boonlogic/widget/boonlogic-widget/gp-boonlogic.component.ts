@@ -55,7 +55,7 @@ import { AppStateService } from '@c8y/ngx-components';
 @Component({
   selector: 'lib-gp-boonlogic',
   templateUrl: './gp-boonlogic.component.html',
-  styleUrls: ['./.././../node_modules/@ng-select/ng-select/themes/default.theme.css','./gp-boonlogic.component.css'],
+  styleUrls: ['./.././../node_modules/@ng-select/ng-select/themes/default.theme.css', './gp-boonlogic.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
 export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
@@ -109,7 +109,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
   displayStreamAllStyle!: any;
   displayStreamNoneStyle!: any;
   childDevices: any;
-  selectedChildDevices:[];
+  selectedChildDevices: [];
 
   addDeviceForm = new FormGroup({
     devicename: new FormControl(),
@@ -137,8 +137,10 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
   allApplications!: IApplication[];
   userHasAdminRights!: boolean;
   submitted!: any;
-  childDevicesLength:number =0;
+  childDevicesLength: number = 0;
   includeChildDevice: any = false;
+  measurementControl: any;
+  concatenatedMeasurements: string;
 
   constructor(
     private microserviceBoonLogic: GpBoonlogicService,
@@ -153,7 +155,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
     private appservice: ApplicationService,
     private userService: UserService,
     private appStateService: AppStateService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.itemsPerPage = this.config.pageSize;
@@ -355,19 +357,19 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
    * Save device id and name when device is selected
    */
   async deviceSelected(device: DeviceConfig): Promise<string | -1> {
-    this.childDevicesLength=0;
-    this.selectedChildDevices=[];
+    this.childDevicesLength = 0;
+    this.selectedChildDevices = [];
     if (device) {
-     
-      this.childDevices=[...device.childDevices.references];
-      this.childDevicesLength=device.childDevices.references.length;
+
+      this.childDevices = [...device.childDevices.references];
+      this.childDevicesLength = device.childDevices.references.length;
       this.Selecteddevice = { name: '', id: '' };
       this.Selecteddevice.name = device.name;
       this.Selecteddevice.id = device.id;
       this.measurementList = [];
       this.measurementTypeList = [];
       this.selectedMeasurements = [];
-     this.getcombinemeasurement(device);
+      this.getcombinemeasurement(device);
       return device.name;
     } else {
       return -1;
@@ -378,7 +380,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
     if (device && device.id) {
       this.configDevice = device.id;
       let response = await this.cmonSvc.getTargetObject(device.id);
-      
+
       await this.getFragmentSeries(response, this.measurementList, this.observableMeasurements$);
       if (!this.measurementType) {
         this.measurementType = {};
@@ -399,9 +401,9 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
         .subscribe((mes: string | any[]) => {
           if (mes && mes.length > 0) {
             this.measurementTypeList = [...mes];
-          }          
+          }
         });
-    } 
+    }
   }
   /**
    * This method used in configuration of this widget to populate available measurements for given device id or group id
@@ -463,7 +465,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
           } else {
             const supportedMeasurements = await this.getSupportedMeasurementsForDevice(aDevice.id);
             const fragmentSeries = await this.getSupportedSeriesForDevice(aDevice.id);
-           
+
             if (
               fragmentSeries &&
               fragmentSeries.c8y_SupportedSeries &&
@@ -492,7 +494,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
     fragementList: any,
     fragmentSeries: any,
     supportedMeasurements: any,
-    device:any
+    device: any
   ): any {
     if (fragementList) {
       fragmentSeries.forEach((fs: string) => {
@@ -503,7 +505,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
           const fsName = fs.replace(measurementType[0] + '.', '');
           const fsType = measurementType[0];
           const existingF = fragementList.find(
-            (sm: { type: any; name: string ;id:string;}) => sm.type === fsType && (sm.id===device.id && sm.name === fsName)
+            (sm: { type: any; name: string; id: string; }) => sm.type === fsType && (sm.id === device.id && sm.name === fsName)
           );
           fs = fs + "(" + device.name + ")";
           if (!existingF || existingF == null) {
@@ -511,7 +513,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
               name: fsName,
               type: fsType,
               description: fs,
-              id:device.id
+              id: device.id
             });
           }
         }
@@ -528,12 +530,12 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
             name: fsName,
             type: fsType,
             description: fs,
-            id:device.id
+            id: device.id
           });
         }
       });
     }
-   
+
     return fragementList;
   }
   // Get Supported Series for given device id/
@@ -594,17 +596,15 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   async invokeChildDevices(chDevice: ChildDeviceConfig[]): Promise<void> {
-    if(chDevice.length > 0 && this.includeChildDevice)
-    {
+    if (chDevice.length > 0 && this.includeChildDevice) {
       this.selectedMeasurements = [];
-      for(let ch of this.selectedChildDevices)
-      {
+      for (let ch of this.selectedChildDevices) {
         const response = await this.cmonSvc.getTargetObject(ch);
         this.configDevice = ch;
         this.getcombinemeasurement(response)
       }
     }
-    else{
+    else {
       const response = await this.cmonSvc.getTargetObject(this.Selecteddevice.id);
       this.measurementList = [];
       this.measurementTypeList = [];
@@ -613,7 +613,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
     }
   }
 
-  async invokeParentDevice(e: DeviceConfig){
+  async invokeParentDevice(e: DeviceConfig) {
     this.deviceSelected(e)
   }
 
@@ -644,7 +644,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
       let mstype = '';
       let msId = '';
       let msSeries = '';
-      
+
       if (this.selectedMeasurements) {
         this.selectedMeasurements.forEach((ms: string) => {
           this.measurementTypeList.forEach((ml: any) => {
@@ -652,11 +652,11 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
               mstype = ml.type;
               msId = ml.id;
               msSeries = ml.name;
-             
+
             }
           });
           const values = ms.split('.', 2);
-          const arr = { type: mstype, fragment: values[0], series: msSeries, deviceId:msId };
+          const arr = { type: mstype, fragment: values[0], series: msSeries, deviceId: msId };
           this.deviceMeasurements.push(arr);
         });
         // Micorservice configration Parameters initialization
@@ -671,12 +671,12 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
           anomalyHistoryWindow: this.anomalyHistoryWindow || 1000,
         };
         this.microserviceBoonLogic.listUrl = 'amber-integration/sensors';
-        
+
         this.createResponse = await this.microserviceBoonLogic.post({
           id: this.Selecteddevice.id,
           configuration: config,
           dataPoints: this.deviceMeasurements,
-          childDevices:this.selectedChildDevices
+          childDevices: this.selectedChildDevices
         });
         await this.loadSpecificFragmentDevice();
         if (this.createResponse.status === 201 || this.createResponse.status === 200) {
@@ -808,28 +808,42 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   async editModal(edittemplate: TemplateRef<any>, index: any): Promise<void> {
+
     this.updateDevice = [];
     this.updateDevice = this.pagedItems[index];
     if (this.updateDevice && this.updateDevice.id) {
       this.measurementList = [];
     }
-    if (this.updateDevice.isStreaming === 'false' || this.statusResponse !== 'READY') {
+   // if (this.updateDevice.isStreaming === 'false' || this.statusResponse !== 'READY') {
       this.modalRef = this.modalService.show(edittemplate);
       let measurements = [];
+
+      let tempArr: any;
       this.updateDevice.datapoints.forEach((data) => {
         measurements.push(data.fragment + '.' + data.series);
+
+
       });
-      this.measurementTypeList = [...measurements];
+      tempArr = measurements.concat(this.measurementList)
+      this.measurementTypeList = [...tempArr];
+      this.selectedMeasurements = this.measurementTypeList;
       this.streamingWindowSize = this.updateDevice.configuration.streamingWindowSize;
       this.samplesToBuffer = this.updateDevice.configuration.samplesToBuffer;
       this.learningRateNumerator = this.updateDevice.configuration.learningRateNumerator;
       this.learningRateDenominator = this.updateDevice.configuration.learningRateDenominator;
-      this.learningMaxSamples= this.updateDevice.configuration.learningMaxSamples;
-      this.anomalyHistoryWindow= this.updateDevice.configuration.anomalyHistoryWindow;
+      this.learningMaxSamples = this.updateDevice.configuration.learningMaxSamples;
+      this.anomalyHistoryWindow = this.updateDevice.configuration.anomalyHistoryWindow;
       //await this.getspecificmeasurement({ deviceId: this.updateDevice.id });
-    }
+    //}
   }
-
+  clearTextValues() {
+    this.anomalyHistoryWindow = null;
+    this.streamingWindowSize = null;
+    this.samplesToBuffer = null;
+    this.learningRateNumerator = null;
+    this.learningRateDenominator = null;
+    this.learningMaxSamples = null;
+  }
   async getspecificmeasurement(deviceId: any): Promise<void> {
     if (deviceId) {
       const response = await this.cmonSvc.getTargetObject(deviceId);
@@ -952,9 +966,8 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   async onCheckboxChange(event: any): Promise<void> {
-    this.includeChildDevice=event.target.checked;
-    if(!this.includeChildDevice)
-    {
+    this.includeChildDevice = event.target.checked;
+    if (!this.includeChildDevice) {
       const response = await this.cmonSvc.getTargetObject(this.Selecteddevice.id);
       this.measurementList = [];
       this.measurementTypeList = [];
@@ -968,12 +981,12 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
 export interface DeviceConfig {
   id: string;
   name: string;
-  childDevices:any;
+  childDevices: any;
 }
 
-export interface ChildDeviceConfig{
-  managedObject:{
-    id:string;
-    name:string;
+export interface ChildDeviceConfig {
+  managedObject: {
+    id: string;
+    name: string;
   }
 }
