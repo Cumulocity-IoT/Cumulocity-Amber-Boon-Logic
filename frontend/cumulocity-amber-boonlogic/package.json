@@ -3,8 +3,8 @@
   "version": "2.0.2",
   "description": "This is the Cumulocity module federation plugin which used to configure/reconfigure/delete/start - stop stream any device with Amber and is designed to display device model and streaming status on real time basis.",
   "scripts": {
-    "start": "c8ycli server ",
-    "build": "c8ycli build --env.mode=production",
+    "start": "c8ycli server -u https://appbuilder.eu-latest.cumulocity.com/", 
+    "build": "c8ycli build --env.mode=development",
     "deploy": "c8ycli deploy",
     "postinstall": "ngcc",
     "prebuild": " gulp clean",

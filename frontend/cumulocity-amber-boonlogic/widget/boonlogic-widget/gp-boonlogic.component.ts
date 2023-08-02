@@ -232,6 +232,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
   async manageRealtime(device: any): Promise<void> {
     if (this.realtimeState) {
       const index = this.pagedItems.findIndex((element: { id: any }) => element.id === device.id);
+      if(device.c8y_AmberSensorConfiguration){
       const isStreaming = String(device.c8y_AmberSensorConfiguration.isStreaming);
       const arr = {
         id: device.id,
@@ -257,6 +258,8 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
       }
     }
   }
+}
+
 
   openModal(template: TemplateRef<any>): void {
     this.modalRef = this.modalService.show(template);
