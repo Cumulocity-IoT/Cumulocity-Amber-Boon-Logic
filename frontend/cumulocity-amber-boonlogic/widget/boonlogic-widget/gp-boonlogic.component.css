@@ -23,8 +23,9 @@
   width: 20px;
   background-color: #bbb;
   border-radius: 50%;
-  display: inline-block;
+  display: inline-block !important;
 }
+
 
 .boonlogictable {
   background-color: var(--component-background, #fff);
