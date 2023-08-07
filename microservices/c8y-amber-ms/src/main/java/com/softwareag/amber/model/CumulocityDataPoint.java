@@ -10,4 +10,6 @@ public class CumulocityDataPoint {
     private String fragment;
 
     private String series;
+
+    private String deviceId;
 }

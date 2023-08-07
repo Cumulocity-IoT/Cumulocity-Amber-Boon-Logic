@@ -207,12 +207,14 @@ export class GpRcaComponent implements OnInit, OnDestroy {
       // Get the measurements as soon as device or group is selected
       this.measurementSubs = this.observableMeasurements$
         .pipe(skip(1))
+        .pipe(distinctUntilChanged())
         // tslint:disable-next-line: deprecation
         .subscribe(async (mes) => {
           this.measurementTypeList = [];
           if (mes && mes.length > 0) {
             this.measurementTypeList = [...mes];
             await this.checkFargmentSeries();
+            this.measurementSubs.unsubscribe();
           }
         });
     }
