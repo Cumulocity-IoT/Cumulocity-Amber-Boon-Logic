@@ -6,7 +6,7 @@
 
     <groupId>com.softwareag.amber</groupId>
     <artifactId>amber-integration</artifactId>
-    <version>0.0.22</version>
+    <version>0.0.24</version>
 
 
     <name>amber-integration</name>
@@ -29,20 +29,20 @@
 
         <microservice.name>amber-integration</microservice.name>
         <agent.main.class>com.softwareag.amber.App</agent.main.class>
-        <c8y.docker.skip>true</c8y.docker.skip>
+        <c8y.docker.skip>false</c8y.docker.skip>
     </properties>
 
     <repositories>
         <repository>
             <id>cumulocity</id>
             <layout>default</layout>
-            <url>http://download.cumulocity.com/maven/repository</url>
+            <url>https://download.cumulocity.com/maven/repository</url>
         </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
             <id>public</id>
-            <url>http://download.cumulocity.com/maven/repository</url>
+            <url>https://download.cumulocity.com/maven/repository</url>
         </pluginRepository>
     </pluginRepositories>
 

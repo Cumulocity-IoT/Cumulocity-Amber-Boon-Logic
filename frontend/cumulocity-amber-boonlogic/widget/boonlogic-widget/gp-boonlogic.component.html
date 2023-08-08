@@ -193,7 +193,7 @@
               class="modal"
               tabindex="-1"
               role="dialog"
-              [ngStyle]="{ display: displayDeRegisterStyle }"
+              [ngStyle]="{ display:displayDeRegisterStyle }"
             >
               >
 
@@ -291,21 +291,22 @@
           <td>
             <button
               class="editbtn btn btn-icon btn-xs btn-default"
-              [disabled]="device.isStreaming === 'true' || statusResponse != 'READY'"
-              title="Edit"
+              [enable]="device.isStreaming === 'false' || statusResponse != 'READY'"
+              title="View"
             >
               <i
-                c8yicon="pencil"
-                class="dlt-c8y-icon-pencil"
+                c8yicon="eye"
+                class="dlt-c8y-icon-eye"
                 (click)="editModal(edittemplate, i)"
               ></i>
             </button>
             <ng-template #edittemplate>
               <div class="modal-header">
                 <h4 class="modal-title text-normal text-center" translate="">
-                  Update Device Configuration
+                  View Device Configuration
                 </h4>
               </div>
+              
               <div
                 class="modal-body d-grid grid__col--4-4--md"
                 style="margin-top: 10px; margin-bottom: 5px; margin-left: 24px; margin-right: 24px"
@@ -316,7 +317,7 @@
                       >Select Measurement</label
                     >
                     <div class="form-group">
-                      <ng-select
+                      <ng-select 
                         required
                         [items]="measurementTypeList"
                         bindLabel="description"
@@ -330,8 +331,8 @@
                         [(ngModel)]="selectedMeasurements"
                         formControlName="devicemeasure"
                         (change)="invokeUpdateSetValue()"
-                      >
-                      </ng-select>
+                        [readonly]="true" >
+                    </ng-select>
                     </div>
                   </div>
                   <div bg-gray-white card-block large-padding>
@@ -348,7 +349,7 @@
                               class="dlt-c8y-icon-question-circle"
                             ></i
                           ></label>
-                          <input
+                          <input 
                             formControlName="streamingWindowSize"
                             type="number"
                             min="1"
@@ -357,7 +358,7 @@
                             [(ngModel)]="streamingWindowSize"
                             class="form-control"
                             placeholder="e.g. 25"
-                          />
+                            readonly/>
                         </div>
                       </div>
                       <div class="col-sm-5 col-xs-6">
@@ -380,7 +381,7 @@
                             [(ngModel)]="samplesToBuffer"
                             class="form-control"
                             placeholder="e.g. 5000"
-                          />
+                            readonly  />
                         </div>
                       </div>
                       <div class="col-sm-5 col-xs-6">
@@ -403,7 +404,7 @@
                             [(ngModel)]="learningRateNumerator"
                             class="form-control"
                             placeholder="e.g. 10"
-                          />
+                            readonly />
                         </div>
                       </div>
                       <div class="col-sm-5 col-xs-6">
@@ -426,7 +427,7 @@
                             [(ngModel)]="learningRateDenominator"
                             class="form-control"
                             placeholder="e.g. 10000"
-                          />
+                            readonly />
                         </div>
                       </div>
                       <div class="col-sm-5 col-xs-6">
@@ -449,7 +450,7 @@
                             [(ngModel)]="learningMaxSamples"
                             class="form-control"
                             placeholder="e.g. 10000"
-                          />
+                            readonly />
                         </div>
                       </div>
                       <div class="col-sm-5 col-xs-6">
@@ -472,7 +473,7 @@
                             [(ngModel)]="anomalyHistoryWindow"
                             class="form-control"
                             placeholder="e.g. 1000"
-                          />
+                            readonly/>
                         </div>
                       </div>
                     </div>
@@ -487,17 +488,17 @@
                     (click)="closeUpdateSensor()"
                     translate=""
                   >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    [disabled]="!selectedMeasurements"
-                    class="btn btn-primary"
-                    (click)="updateSensor()"
-                    translate=""
-                  >
-                    Submit
-                  </button>
+                    OK
+                    </button>
+                    <!-- <button
+                      type="button"
+                      [disabled]="!selectedMeasurements"
+                      class="btn btn-primary"
+                      (click)="updateSensor()"
+                      translate=""
+                    >
+                      Submit
+                    </button> -->
                 </div>
               </div>
             </ng-template>
@@ -610,6 +611,7 @@
               placeholder="Search Device"
               type="search"
               formControlName="devicename"
+              (change)="invokeParentDevice($event)"
             />
             <span class="input-group-addon" style="margin-right: 20px">
               <i c8yIcon="search" *ngIf="!value || value.length === 0"></i>
@@ -623,6 +625,37 @@
             <div *ngIf="searching" style="margin: 5px">
               <i class="fa fa-circle-o-notch fa-spin"></i>
             </div>
+          </div>
+          <div class="input-group form-group" *ngIf="this.childDevicesLength > 0">
+           <div class="row col-sm-12">
+              <div class="btn-group device-list-switch-toggle ">
+                <label class="c8y-switch ">
+                  <input type="checkbox" (change)="onCheckboxChange($event)" [checked]="includeChildDevice">
+                  <span></span> <label translate="">Include child Devices</label>
+                </label>
+              </div>
+            </div>
+            </div>
+          <div *ngIf="includeChildDevice && this.childDevicesLength > 0">
+          <label translate="">Select child devices</label>
+          <div class="form-group">
+            <ng-select
+              formControlName="childDevices_"
+              required
+              [items]="childDevices"
+              bindLabel="managedObject.name"
+              bindValue="managedObject.id"
+              name="childDeviceSelect"
+              required
+              [multiple]="true"
+              [closeOnSelect]="false"
+              [searchable]="true"
+              placeholder="Select Child Devices"
+              [(ngModel)]="selectedChildDevices"
+              (change)="invokeChildDevices($event)"
+            >
+            </ng-select>
+          </div>
           </div>
           <label style="padding-top: 5px" for="Measurements" translate="">Select Measurement</label>
           <div class="form-group">

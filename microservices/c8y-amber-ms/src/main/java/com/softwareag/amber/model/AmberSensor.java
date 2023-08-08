@@ -27,6 +27,9 @@ public class AmberSensor extends AbstractDynamicProperties {
     private CumulocityDataPoint[] dataPoints;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String[] ChildDevices;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private boolean isStreaming;
 
     @JsonIgnore

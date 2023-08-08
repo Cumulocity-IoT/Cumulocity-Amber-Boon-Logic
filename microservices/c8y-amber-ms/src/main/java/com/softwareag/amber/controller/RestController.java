@@ -5,8 +5,6 @@ import com.cumulocity.microservice.context.credentials.MicroserviceCredentials;
 import com.cumulocity.microservice.subscription.model.MicroserviceSubscriptionAddedEvent;
 import com.cumulocity.sdk.client.SDKException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.softwareag.amber.client.AmberClient;
-import com.softwareag.amber.client.AmberCredentials;
 import com.softwareag.amber.model.*;
 import com.softwareag.amber.service.AmberService;
 import com.softwareag.amber.service.CredentialsConfigurationService;
@@ -114,7 +112,7 @@ public class RestController {
             amberSensor.setConfiguration(amberSensorConfiguration);
             amberSensor.setDataPoints(deviceConfiguration.getDataPoints());
             amberSensor.setStreaming(true);
-
+            amberSensor.setChildDevices(deviceConfiguration.getChildDevices());
             deviceConfigurationService.updateDeviceWithAmberSensorConfiguration(deviceConfiguration.getId(), amberSensor);
 
             return new ResponseEntity<>(amberSensor, HttpStatus.CREATED);

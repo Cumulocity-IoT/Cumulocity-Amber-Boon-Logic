@@ -12,4 +12,6 @@ public class CumulocityDeviceConfiguration {
     private @NotNull AmberSensorConfiguration configuration;
 
     private @NotNull CumulocityDataPoint[] dataPoints;
+
+    private String[] childDevices;
 }
