@@ -180,14 +180,26 @@ public class DeviceConfigurationService {
     }
 
     public void cancelMeasurementSubscription(final String deviceId) {
-        if (!measurementSubscriptions.containsKey(deviceId)) {
-            return;
+        final AmberSensor sensor = sensors.get(deviceId);
+        final String[] childDeviceList = sensor.getChildDevices();
+        if (measurementSubscriptions.containsKey(deviceId)) {
+            final Subscription<String> measurementSubscription = measurementSubscriptions.get(deviceId);
+            measurementSubscription.unsubscribe();
+            measurementSubscriptions.remove(deviceId);
+            log.info("Clearing measurement subscription for device: " + deviceId);
         }
-
-        final Subscription<String> measurementSubscription = measurementSubscriptions.get(deviceId);
-        measurementSubscription.unsubscribe();
-
-        measurementSubscriptions.remove(deviceId);
+        if (childDeviceList != null && childDeviceList.length > 0) {
+            for (String childDeviceId : childDeviceList) {
+                if (measurementSubscriptions.containsKey(childDeviceId)) {
+                    final Subscription<String> measurementSubscriptionChild = measurementSubscriptions
+                            .get(childDeviceId);
+                    measurementSubscriptionChild.unsubscribe();
+                    measurementSubscriptions.remove(childDeviceId);
+                    log.info("Clearing measurement subscription for child device: " + childDeviceId);
+                }
+            }
+        }
+        
     }
 
     public void updateMeasurementNotificationSubscription(final String deviceId) {
