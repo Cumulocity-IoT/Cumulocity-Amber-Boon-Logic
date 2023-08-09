@@ -41,7 +41,7 @@
   color: var(--component-brand-primary, #000);
 }
 .editbtn {
-  color: black !important;
+  color: #e0000e !important;
   border-color: var(--component-border, #f2f3f4);
 }
 .pagination>li:last-child>a, .pagination>li:last-child>span {
