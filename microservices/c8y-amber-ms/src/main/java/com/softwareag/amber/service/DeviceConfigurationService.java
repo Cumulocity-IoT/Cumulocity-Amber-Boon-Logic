@@ -64,8 +64,6 @@ public class DeviceConfigurationService {
 
     private final Map<String, BigDecimal[]> deviceDataVectors = new HashMap<>();
 
-    private BigDecimal[] dataVector ;
-
     private final Map<String, BigDecimal[]> excessDataVector = new HashMap<>();
 
     private Map<String, Integer> dataVectorCounter = new HashMap<>();
@@ -230,60 +228,25 @@ public class DeviceConfigurationService {
         deviceDataVectors.put(deviceId, new BigDecimal[dataPointsAll.length]);
         dataVectorCounter.put(deviceId,0);
         excessDataVectorCounter.put(deviceId,0);
-        excessDataVector.put(deviceId,new BigDecimal[dataPointsAll.length * 5]);
-        dataVector = deviceDataVectors.get(deviceId);
-        int counter = 0;
+        excessDataVector.put(deviceId,new BigDecimal[dataPointsAll.length * 10]);
         if(childDeviceList != null) {
             log.info("childDeviceList Length: "+ childDeviceList.length);
             for (String childDeviceId : childDeviceList) {
-                counter = 0;
-                for (CumulocityDataPoint dataPoints2 : dataPointsAll) {
-                        if(dataPoints2.getDeviceId() != null && dataPoints2.getDeviceId().equals(childDeviceId)) { 
-                            counter ++; 
-                        }
-                }
-                CumulocityDataPoint[] dataPoints = new CumulocityDataPoint[counter];
-                log.info("Child device dataPoints length: "+ dataPoints.length);
-                counter = 0;
-                for (CumulocityDataPoint dataPoints2 : dataPointsAll) {
-                        if(dataPoints2.getDeviceId() != null && dataPoints2.getDeviceId().equals(childDeviceId)){
-                            dataPoints[counter] = dataPoints2;
-                            counter ++;
-                        }
-                }
                 log.info("childDevice Id: "+ childDeviceId);
-                registerForMeasurementNotifications(deviceId, childDeviceId, dataPoints);
+                registerForMeasurementNotifications(deviceId, childDeviceId);
             }
 
-            int deviceCounter = 0;
-            for (CumulocityDataPoint dataPoints2 : dataPointsAll) {
-                    if(dataPoints2.getDeviceId() != null && dataPoints2.getDeviceId().equals(deviceId)) { deviceCounter ++; }
-            }
-            log.info("main device counter length: "+ deviceCounter);
-            CumulocityDataPoint[] dataPoints = new CumulocityDataPoint[deviceCounter];
-            deviceCounter = 0;
-            for (CumulocityDataPoint dataPoints2 : dataPointsAll) {
-              //  log.info("dataPoints2.getDeviceId(): "+ dataPoints2.getDeviceId());
-                if(dataPoints2.getDeviceId() != null && dataPoints2.getDeviceId().equals(deviceId))  {
-                    dataPoints[deviceCounter] = dataPoints2;
-                    deviceCounter ++;
-                //    log.info("deviceCounter: "+ deviceCounter);
-                }
-            }
             log.info("Device Id: "+ deviceId);
-            log.info("deviceCounter: "+ deviceCounter);
-            log.info("main device data points length: "+ dataPoints.length);
-            registerForMeasurementNotifications(deviceId, deviceId, dataPoints);
+            registerForMeasurementNotifications(deviceId, deviceId);
         } else {
-
             log.info("Child Device not found. loading default");
-            registerForMeasurementNotifications(deviceId, deviceId, dataPointsAll);
+            registerForMeasurementNotifications(deviceId, deviceId);
         }
     }
-    private void registerForMeasurementNotifications(final String deviceId,  String currentDeviceId, CumulocityDataPoint[] dataPoints) {
+    private void registerForMeasurementNotifications(final String deviceId,  String currentDeviceId) {
      
         final AmberSensor sensor = sensors.get(deviceId);
-        final CumulocityDataPoint[] dataPointsAll = sensor.getDataPoints();
+        final CumulocityDataPoint[] dataPoints = sensor.getDataPoints();
      
     //    log.info("current device id: "+ currentDeviceId);
     //    log.info("getting datapoint for device: "+ dataPoints.length);
@@ -293,8 +256,8 @@ public class DeviceConfigurationService {
             @Override
             public void onNotification(Subscription<String> arg0, MeasurementNotification notification) {
                 contextService.runWithinContext(credentials, () -> {
-                   
-                  final MeasurementRepresentation measurement = jsonParser.parse(MeasurementRepresentation.class, json.forValue(notification.getData()));
+                    BigDecimal[] dataVector = deviceDataVectors.get(deviceId);
+                    final MeasurementRepresentation measurement = jsonParser.parse(MeasurementRepresentation.class, json.forValue(notification.getData()));
 
                     // TODO filter measurement based on type
 //                boolean isMeasurementRelevant = false;
@@ -308,46 +271,42 @@ public class DeviceConfigurationService {
 //                    return;
 //                }
 
-                  dataVector = deviceDataVectors.get(deviceId);
-                  dataVector = writeMeasurementToDataVector(measurement, dataPoints, dataVector, deviceId);
-                  deviceDataVectors.put(deviceId, dataVector);
-                  int dataCounter = dataVectorCounter.get(deviceId);
-                  log.info("Post data loading: dataVector Counter: "+ dataCounter);
-                  if (!isDataVectorValid(deviceDataVectors.get(deviceId))) {
+                    dataVector = writeMeasurementToDataVector(measurement, dataPoints, dataVector);
+                    if (!isDataVectorValid(dataVector)) {
                         return;
-                  }
-                  final AmberStreamData amberStreamDataResponse = sendDataVectorToAmber(sensor.getSensorId(), deviceDataVectors.get(deviceId));
-                  amberStreamDataResponse.setSampleCount(increaseSampleCount(sensorStreamingData.get(deviceId)));
-                  // reset data vector
-                  deviceDataVectors.put(deviceId, new BigDecimal[dataPointsAll.length]);
-                  if(dataCounter >= dataPointsAll.length) {
-                        dataVector =  deviceDataVectors.get(deviceId);
-                        dataVectorCounter.put(deviceId,0);
-                        log.info("dataVector Counter after reset: "+ dataVectorCounter);
-                  }
-                  log.info("amber stream data response" + amberStreamDataResponse.getState());
-                  updateCumulocityDeviceWithAmberStatus(deviceId, amberStreamDataResponse);
-                  final Optional<Map<String, Object>> rootCauseMeasurementFragments = createRootCauseMeasurement(deviceId,
-                            amberStreamDataResponse, sensor);
-                  createAmberStreamDataStatusMeasurement(deviceId, amberStreamDataResponse, rootCauseMeasurementFragments);
+                    }
+                    final AmberStreamData amberStreamDataResponse = sendDataVectorToAmber(sensor.getSensorId(), dataVector);
+                    amberStreamDataResponse.setSampleCount(increaseSampleCount(sensorStreamingData.get(deviceId)));
+                    // reset data vector
+                    deviceDataVectors.put(deviceId, new BigDecimal[dataPoints.length]);
 
-                  // only create Amber state event if the state has been changed
-                  if (!sensorStreamingData.containsKey(deviceId)
+                    updateCumulocityDeviceWithAmberStatus(deviceId, amberStreamDataResponse);
+                    final Optional<Map<String, Object>> rootCauseMeasurementFragments = createRootCauseMeasurement(deviceId,
+                            amberStreamDataResponse, sensor);
+                    createAmberStreamDataStatusMeasurement(deviceId, amberStreamDataResponse, rootCauseMeasurementFragments);
+
+                    // only create Amber state event if the state has been changed
+                    if (!sensorStreamingData.containsKey(deviceId)
                             || isAmberSensorStateChanged(sensorStreamingData.get(deviceId), amberStreamDataResponse)
                             || isMonitoringEventAndTimeForLastMonitoringEventElapsed(amberStreamDataResponse, sensor)) {
                         createAmberStateEvent(deviceId, amberStreamDataResponse);
-                        // getting first mesurement to configure RCA widget while  stage change to learning
-                        if (amberStreamDataResponse != null && StringUtils.hasText(amberStreamDataResponse.getState())) {
-                                if(amberStreamDataResponse.getState().equals("Learning")){
-                                    final int clusterId = amberStreamDataResponse.getID()[0];
-                                    final double[] rootCause = amberService.getRootCause(sensor.getSensorId(), clusterId);
-                                    final Optional<Map<String, Object>> emptyRootCauseMeasurementFragments = createRootCauseMeasurementFragments(deviceId,
-                                    rootCause, sensor.getDataPoints());
-                                    createAmberStreamDataStatusMeasurement(deviceId, amberStreamDataResponse, emptyRootCauseMeasurementFragments);
-                                }
+                        // getting first mesurement to configure RCA widget while stage change to
+                        // learning
+                        if (amberStreamDataResponse != null
+                                && StringUtils.hasText(amberStreamDataResponse.getState())) {
+                            if (amberStreamDataResponse.getState().equals("Learning")) {
+                                final int clusterId = amberStreamDataResponse.getID()[0];
+                                final double[] rootCause = amberService.getRootCause(sensor.getSensorId(), clusterId);
+                                final Optional<Map<String, Object>> emptyRootCauseMeasurementFragments = createRootCauseMeasurementFragments(
+                                        deviceId,
+                                        rootCause, sensor.getDataPoints());
+                                createAmberStreamDataStatusMeasurement(deviceId, amberStreamDataResponse,
+                                        emptyRootCauseMeasurementFragments);
+                            }
                         }
-                  }
-                  sensorStreamingData.put(deviceId, amberStreamDataResponse);
+                    }
+
+                    sensorStreamingData.put(deviceId, amberStreamDataResponse);
                 });
             }
 
@@ -359,6 +318,7 @@ public class DeviceConfigurationService {
 
         measurementSubscriptions.put(currentDeviceId, measurementSubscription);
     }
+
 
     private AmberStreamData sendDataVectorToAmber(final String amberSensorId, final BigDecimal[] dataVector) {
         final String dataVectorPayload = Arrays.toString(dataVector).replace("[", "").replace("]", "").replace(" ", "");
@@ -473,7 +433,7 @@ public class DeviceConfigurationService {
         Map<String, Object> sampleCountFragment = new HashMap<>();
         sampleCountFragment.put("sample_count", new MeasurementValue(new BigDecimal(streamData.getSampleCount()), ""));
         measurementRepresentation.setProperty("c8y_sample_count", sampleCountFragment);
-        log.info("Amber response creating measurements" + measurementRepresentation);
+        //log.info("Amber response creating measurements" + measurementRepresentation);
         measurementApi.createWithoutResponse(measurementRepresentation);
     }
 
@@ -525,30 +485,12 @@ public class DeviceConfigurationService {
     }
 
     private BigDecimal[] writeMeasurementToDataVector(final MeasurementRepresentation measurementRepresentation, final CumulocityDataPoint[] dataPoints,
-                                                      final BigDecimal[] dataVector, final String deviceId) {
+                                                      final BigDecimal[] dataVector) {
         if (dataPoints == null || dataPoints.length == 0) {
             log.error("No data points defined");
             return new BigDecimal[0];
         }
-        BigDecimal[] excessDataVectorObj = excessDataVector.get(deviceId);
-        log.info("current datapoints length: " + dataPoints.length);
-        log.info("datavector length: " + dataVector.length);
-        log.info("reserve datavector length: " + excessDataVectorObj.length);
-        int dataCounterNum = dataVectorCounter.get(deviceId);
-        int excessCounter = excessDataVectorCounter.get(deviceId);
-        log.info("dataVector Counter:" + dataVectorCounter);
-        log.info("Reserve DataVector Counter:" + excessDataVectorCounter);
-        if(dataCounterNum < dataVector.length){
-            for(int index = 0; index < excessCounter; index++) {
-                dataVector[dataCounterNum + index] = excessDataVectorObj[index];
-            }
-            dataCounterNum = dataCounterNum + excessCounter;
-            excessCounter = 0;
-            excessDataVectorObj = excessDataVector.get(deviceId);
-        }
-        log.info("dataVectorCounter after populating from reserve:" + dataVectorCounter);
-        log.info("Reserve DataVectorCounter (Leftover):" + excessDataVectorCounter);
-        int dataCounter = 0;
+
         for (int index = 0; index < dataPoints.length; index++) {
             CumulocityDataPoint dataPoint = dataPoints[index];
             if (!measurementRepresentation.hasProperty(dataPoint.getFragment())) {
@@ -561,24 +503,13 @@ public class DeviceConfigurationService {
             }
 
             final MeasurementValue measurementValue = jsonParser.parse(MeasurementValue.class, json.forValue(fragment.get(dataPoint.getSeries())));
-            if((dataCounterNum + index) >= dataVector.length) {
-                if((dataCounterNum + index) < excessDataVectorObj.length) {
-                    excessDataVectorObj[excessCounter] =measurementValue.getValue();
-                    excessCounter ++;
-                } else {
-                     log.error("Unable to add data in stack for device id: " + deviceId + "Please restart microservice");
-                }
+            dataVector[index] = measurementValue.getValue();
+           /*  for (BigDecimal entry : dataVector) {
+                log.info("local datavector data:" + entry);
+            } */
                
-
-            } else {
-                dataVector[dataCounterNum + index] = measurementValue.getValue();
-                dataCounter ++;
-            }         
         }
-        dataCounterNum = dataCounterNum + dataCounter;
-        dataVectorCounter.put(deviceId,dataCounterNum);
-        excessDataVectorCounter.put(deviceId,excessCounter);
-        excessDataVector.put(deviceId, excessDataVectorObj);
+
         return dataVector;
     }
 
@@ -587,7 +518,6 @@ public class DeviceConfigurationService {
             log.error("Data vector is not available.");
             return false;
         }
-
         for (BigDecimal entry : dataVector) {
             if (entry == null) {
                 return false;

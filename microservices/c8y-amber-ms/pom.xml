@@ -6,7 +6,7 @@
 
     <groupId>com.softwareag.amber</groupId>
     <artifactId>amber-integration</artifactId>
-    <version>0.0.24</version>
+    <version>0.0.25</version>
 
 
     <name>amber-integration</name>

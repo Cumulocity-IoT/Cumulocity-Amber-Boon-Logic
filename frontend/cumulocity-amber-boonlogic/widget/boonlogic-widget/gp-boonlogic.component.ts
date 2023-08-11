@@ -403,7 +403,8 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
         // tslint:disable-next-line: deprecation
         .subscribe((mes: string | any[]) => {
           if (mes && mes.length > 0) {
-            this.measurementTypeList = [...mes];
+            this.measurementTypeList=[];
+            this.measurementTypeList = [...this.measurementTypeList,...mes];
           }
         });
     }
