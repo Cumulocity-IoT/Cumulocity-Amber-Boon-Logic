@@ -58,4 +58,7 @@ public class AmberStreamData {
 
     @JsonProperty("NW")
     private double[] NW;
+
+     @JsonProperty("RC")
+    private double[] RC;
 }

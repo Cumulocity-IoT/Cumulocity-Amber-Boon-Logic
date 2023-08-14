@@ -425,6 +425,31 @@ public class DeviceConfigurationService {
             measurementRepresentation.setProperty("c8y_om", fragment);
         }
 
+        if (streamData.getAH() != null && streamData.getAH().length > 0) {
+            Map<String, Object> fragment = new HashMap<>();
+            fragment.put("ah", new MeasurementValue(new BigDecimal(streamData.getAH()[0]), "int"));
+            measurementRepresentation.setProperty("c8y_ah", fragment);
+        }
+
+        if (streamData.getAM() != null && streamData.getAM().length > 0) {
+            Map<String, Object> fragment = new HashMap<>();
+            fragment.put("am", new MeasurementValue(new BigDecimal(streamData.getAM()[0]), "int"));
+            measurementRepresentation.setProperty("c8y_am", fragment);
+        }
+
+        if (streamData.getRC() != null && streamData.getRC().length > 0) {
+            Map<String, Object> fragment = new HashMap<>();
+            fragment.put("rc", new MeasurementValue(new BigDecimal(streamData.getRC()[0]), "int"));
+            measurementRepresentation.setProperty("c8y_rc", fragment);
+        }
+
+        
+        if (streamData.getRI() != null && streamData.getRI().length > 0) {
+            Map<String, Object> fragment = new HashMap<>();
+            fragment.put("ri", new MeasurementValue(new BigDecimal(streamData.getRI()[0]), "int"));
+            measurementRepresentation.setProperty("c8y_ri", fragment);
+        }
+
 
         if (rootCauseMeasurementFragments.isPresent()) {
             measurementRepresentation.setProperty("c8y_AmberRootCause", rootCauseMeasurementFragments.get());
