@@ -652,7 +652,7 @@
               [searchable]="true"
               placeholder="Select Child Devices"
               [(ngModel)]="selectedChildDevices"
-              (change)="invokeChildDevices($event)"
+              (blur)="invokeChildDevices($event)"
             >
             </ng-select>
           </div>
