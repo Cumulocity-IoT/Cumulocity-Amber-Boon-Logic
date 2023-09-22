@@ -38,11 +38,11 @@ Will work only if the respective tenant has amber specific microservice deployed
 
 |APPLICATION BUILDER | CUMULOCITY | AMBER RCA  WIDGET |
 |--------------------|------------|-------------------|
-| 1.3.x              | >= 1011.x.x| 2.x.x             |
+| 2.x.x              | >= 1016.x.x| 2.x.x             |
 
 ### Runtime Widget Deployment?
 
-* This widget support runtime deployment. Download **[Runtime Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.1/sag-ps-pkg-boonlogic-config-runtime-widget-2.0.1.zip)** and install via Administrations --> Ecosystems --> Applications --> Packages.
+* This widget support runtime deployment. Download **[Runtime Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.1.2/sag-ps-pkg-boonlogic-config-runtime-widget-2.1.2.zip)** and install via Administrations --> Ecosystems --> Applications --> Packages.
 
 ### Installation of widget through Appbuilder 
 
@@ -83,7 +83,7 @@ Will work only if the respective tenant has amber specific microservice deployed
 
 **Note:** If you are new to App Builder or not yet downloaded/clone app builder code then please follow [App builder documentation(Build Instructions)](https://github.com/SoftwareAG/cumulocity-app-builder) before proceeding further.
 
-1. Grab the Boon Logic Configuration Widget **[Latest Release Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.1/sag-ps-pkg-boonlogic-config-runtime-widget-2.0.1.zip)**
+1. Grab the Boon Logic Configuration Widget **[Latest Release Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.1.2/sag-ps-pkg-boonlogic-config-runtime-widget-2.1.2.zip)**
 
 3. Install the Binary file in app builder.
 
