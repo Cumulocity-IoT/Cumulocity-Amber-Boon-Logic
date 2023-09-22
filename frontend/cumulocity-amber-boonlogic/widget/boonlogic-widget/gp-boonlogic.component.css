@@ -37,9 +37,16 @@
 .boonlogictable tr {
   color: var(--component-color, #000);
 }
-.boonlogictable tr:hover {
+/*.boonlogictable tr:hover {
   color: var(--component-brand-primary, #000);
+}*/
+.table-hover>tbody>tr:hover{
+  background: var(--component-brand-primary) !important;
 }
+.table-hover tr:hover td{
+  background: var(--component-brand-primary) !important;
+}
+
 .editbtn {
   color: #e0000e !important;
   border-color: var(--component-border, #f2f3f4);
