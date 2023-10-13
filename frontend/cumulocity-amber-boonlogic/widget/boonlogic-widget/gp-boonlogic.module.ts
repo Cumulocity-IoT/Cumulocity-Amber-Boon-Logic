@@ -19,7 +19,7 @@
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GpBoonlogicComponent } from './gp-boonlogic.component';
-import { CommonModule, CoreModule, HOOK_COMPONENTS } from '@c8y/ngx-components';
+import { CommonModule, CoreModule, DynamicDatapointsResolver, HOOK_COMPONENTS } from '@c8y/ngx-components';
 import { GpBoonlogicConfigComponent } from './config/gp-boonlogic-config.component';
 import { GpBoonlogicService } from './gp-boonlogic.service';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
@@ -29,6 +29,7 @@ import { Commonc8yService } from './Commonc8yservice.service';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import * as preview from './preview-image';
+import { DatapointSelectorModule } from '@c8y/ngx-components/datapoint-selector';
 
 @NgModule({
   declarations: [GpBoonlogicComponent, GpBoonlogicConfigComponent],
@@ -42,6 +43,7 @@ import * as preview from './preview-image';
     FormsModule,
     ReactiveFormsModule,
     PaginationModule.forRoot(),
+    DatapointSelectorModule
   ],
   entryComponents: [GpBoonlogicComponent, GpBoonlogicConfigComponent],
   exports: [GpBoonlogicComponent, GpBoonlogicConfigComponent],
@@ -59,6 +61,9 @@ import * as preview from './preview-image';
         description: 'Amber BoonLogic Config Widget',
         component: GpBoonlogicComponent,
         configComponent: GpBoonlogicConfigComponent,
+        resolve: {
+          datapoints: DynamicDatapointsResolver,
+        },
         data: {
           ng1: {
             options: {

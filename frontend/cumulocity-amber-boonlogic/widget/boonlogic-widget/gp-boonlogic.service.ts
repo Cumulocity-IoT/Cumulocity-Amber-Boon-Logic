@@ -30,7 +30,7 @@ export class GpBoonlogicService extends Service<any> {
     super(client);
   }
 
-  post(amberBoonLogicObj: any): any {
+  post(amberBoonLogicObj: any): any {console.log("amberBoonLogicObj:",amberBoonLogicObj);
     if (!this.isMSExist) {
       return;
     }

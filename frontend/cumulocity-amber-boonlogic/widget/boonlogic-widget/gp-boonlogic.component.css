@@ -76,3 +76,7 @@
  .pagination>li:first-child>a, .pagination>li:first-child>span {
   text-indent: 0;
 }
+
+.modal-body{
+  padding: 0% !important;
+}
