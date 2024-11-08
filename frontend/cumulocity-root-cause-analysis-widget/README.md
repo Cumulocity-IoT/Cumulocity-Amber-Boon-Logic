@@ -31,7 +31,7 @@ And when ever AD>0 on click one can see the relavent RCA.
 
 ### Runtime Widget Deployment?
 
-* This widget support runtime deployment. Download **[Runtime Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/rca-runtime-widget-2.0.0.zip)** and use application builder to install your runtime widget.
+* This widget support runtime deployment. Download **[Runtime Binary](https://github.com/Cumulocity-IoT/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/rca-runtime-widget-2.0.0.zip)** and use application builder to install your runtime widget.
 
 ### Installation of widget through Appbuilder 
 
@@ -65,7 +65,7 @@ And when ever AD>0 on click one can see the relavent RCA.
 
 **Installation Steps For App Builder:**
 
-**Note:** If you are new to App Builder or not yet downloaded/clone app builder code then please follow [App builder documentation(Build Instructions)](https://github.com/SoftwareAG/cumulocity-app-builder) before proceeding further.
+**Note:** If you are new to App Builder or not yet downloaded/clone app builder code then please follow [App builder documentation(Build Instructions)](https://github.com/Cumulocity-IoT/cumulocity-app-builder) before proceeding further.
 
 1. Open Your existing App Builder project and install external dependencies by executing below command or install it manually.
 
@@ -77,7 +77,7 @@ And when ever AD>0 on click one can see the relavent RCA.
 
       Installation command :  ```npm i chart.js@2.9.3 ``` 
 
-2. Grab the Amber RCA Chart **[Latest Release Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/gp-rca-2.0.0.tgz)**
+2. Grab the Amber RCA Chart **[Latest Release Binary](https://github.com/Cumulocity-IoT/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/gp-rca-2.0.0.tgz)**
 
 3. Install the Binary file in app builder.
 
@@ -138,7 +138,7 @@ npm run deploy
 
 1. Clone the repository:
 ```
-git clone https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic.git
+git clone https://github.com/Cumulocity-IoT/Cumulocity-Amber-Boon-Logic.git
 ```
 2. Change directory:
 
@@ -192,21 +192,18 @@ Congratulations! RCA Chart is configured.
 ![RCA_Widget_Configuration](https://user-images.githubusercontent.com/24636020/182811609-c6d92bf7-0aae-48c8-87e1-5df99fb698a8.PNG)
 
 1. Target Assets/Devices - deviceid of interest(need to be pre configured with Amber)
-2. Select Device Specific relavent RCA measurements - name of the RCA measurements for which you want chart.
-3. Legend - position of legend by defaut is top (not configurable)
+2. Select Device Specific relevant RCA measurements - name of the RCA measurements for which you want chart.
+3. Legend - position of legend by default is top (not configurable)
 4. Interval -  Group AD value for last hour/last minute.
                 
 One can also select the custom chart color and Border color to beautify the chart, if not default colors will be picked.
 
 ------------------------------
-  
-  
-**This widget is provided as-is and without warranty or support. They do not constitute part of the Software AG product suite. Users are free to use, fork and modify them, subject to the license agreement. While Software AG welcomes contributions, we cannot guarantee to include every contribution in the master project.**
+
+
+**This widget is provided as-is and without warranty or support. They do not constitute part of the Cumulocity product suite. Users are free to use, fork and modify them, subject to the license agreement. While Cumulocity GmbH welcomes contributions, we cannot guarantee to include every contribution in the master project.**
   
 _____________________
   
-For more information you can Ask a Question in the **[TECHcommunity Forums](https://tech.forums.softwareag.com/tags/c/forum/1/Cumulocity-IoT)**.
-  
-  
-You can find additional information in the **[Software AG TECHcommunity](https://tech.forums.softwareag.com/tag/Cumulocity-IoT)**.
+
 
