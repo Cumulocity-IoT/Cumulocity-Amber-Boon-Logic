@@ -2,7 +2,7 @@
   "name": "cumulocity-amber-boon-logic-config-widget",
   "version": "2.0.0",
   "description": "This is an Angular widget which used to configure/reconfigure/delete/start - stop stream any device with Amber and is designed to display device model and streaming status on real time basis.",
-  "author": "Sabreen Irfana - Software AG, Global Presales",
+  "author": "Sabreen Irfana",
   "license": "Apache 2.0",
   "scripts": {
     "ng": "ng",

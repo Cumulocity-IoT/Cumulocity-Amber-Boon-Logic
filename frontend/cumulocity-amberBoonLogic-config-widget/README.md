@@ -29,7 +29,7 @@ Will work only if the respective tenant has amber specific microservice deployed
 
 ### Runtime Widget Deployment?
 
-* This widget support runtime deployment. Download [Runtime Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/boonlogic-config-runtime-widget-2.0.0.zip) and use application builder to install your runtime widget.
+* This widget support runtime deployment. Download [Runtime Binary](https://github.com/Cumulocity-IoT/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/boonlogic-config-runtime-widget-2.0.0.zip) and use application builder to install your runtime widget.
 
 ### Installation of widget through Appbuilder 
 
@@ -60,9 +60,9 @@ Will work only if the respective tenant has amber specific microservice deployed
 
 **Installation Steps For App Builder:**
 
-**Note:** If you are new to App Builder or not yet downloaded/clone app builder code then please follow [App builder documentation(Build Instructions)](https://github.com/SoftwareAG/cumulocity-app-builder) before proceeding further.
+**Note:** If you are new to App Builder or not yet downloaded/clone app builder code then please follow [App builder documentation(Build Instructions)](https://github.com/Cumulocity-IoT/cumulocity-app-builder) before proceeding further.
 
-1. Grab the Boon Logic Configuration Widget **[Latest Release Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/gp-boonlogic-2.0.0.tgz)**
+1. Grab the Boon Logic Configuration Widget **[Latest Release Binary](https://github.com/Cumulocity-IoT/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/gp-boonlogic-2.0.0.tgz)**
 
 3. Install the Binary file in app builder.
 
@@ -122,7 +122,7 @@ npm run deploy
 
 1. Clone the repository:
 ```
-git clone https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic.git
+git clone https://github.com/Cumulocity-IoT/Cumulocity-Amber-Boon-Logic.git
 ```
 2. Change directory:
 
@@ -181,11 +181,7 @@ Congratulations! BoonLogic Amber setting widget is configured.
 ------------------------------
   
   
-**This widget is provided as-is and without warranty or support. They do not constitute part of the Software AG product suite. Users are free to use, fork and modify them, subject to the license agreement. While Software AG welcomes contributions, we cannot guarantee to include every contribution in the master project.**
+**This widget is provided as-is and without warranty or support. They do not constitute part of the Cumulocity product suite. Users are free to use, fork and modify them, subject to the license agreement. While Cumulocity GmbH welcomes contributions, we cannot guarantee to include every contribution in the master project.**
   
 _____________________
-  
-For more information you can Ask a Question in the **[TECHcommunity Forums](https://tech.forums.softwareag.com/tags/c/forum/1/Cumulocity-IoT)**.
-  
-  
-You can find additional information in the **[Software AG TECHcommunity](https://tech.forums.softwareag.com/tag/Cumulocity-IoT)**.
+
